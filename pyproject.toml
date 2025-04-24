@@ -35,6 +35,7 @@ dependencies = [
     "idna>=3.10",
     "ijson>=3.3.0",
     "inspect-ai>=0.3.86",
+    "inspect-cyber",
     "jiter>=0.8.2",
     "jmespath>=1.0.1",
     "jsonlines>=4.0.0",
@@ -61,6 +62,7 @@ dependencies = [
     "python-dotenv>=1.0.2",
     "pyyaml>=6.0.2",
     "referencing>=0.36.2",
+    "requests>=2.32.3",
     "rich>=13.9.4",
     "rpds-py>=0.23.1",
     "s3fs>=2024.12.0",
@@ -124,3 +126,7 @@ replace = "version='{new_version}'"
 filename = "pyproject.toml"
 search = "version = \"{current_version}\""
 replace = "version = \"{new_version}\""
+
+[tool.uv.sources]
+inspect-cyber = { git = "https://github.com/andrew-aisi/inspect_cyber.git", rev = "andrew_updates" }
+inspect-ai = { git = "https://github.com/UKGovernmentBEIS/inspect_ai.git" }
