@@ -182,3 +182,43 @@ challenge-specific files (e.g.  container files):
 1. Create new directory within `src/ucb/challenges/`
 2. Add subfolders for each task, create required files, and task-specific containers
 3. Update `src/ucb/inspect/task.py` to support generating tasks for your benchmark.
+
+
+# Acknowledgements
+
+This repository is largely a combination of existing open source projects with some new glue between them. The authors of the upstream projects
+deserve significant credit for their effort!
+
+## UK AI Security Institute
+* Creators of [Inspect](https://github.com/UKGovernmentBEIS/inspect_ai/)
+* Creators of [Inspect evals](https://github.com/UKGovernmentBEIS/inspect_evals/) with fork of Cybench.
+* Creators of [Inspect cyber](https://github.com/UKGovernmentBEIS/inspect_cyber)
+
+## Cybench
+Cybench authors. [Paper](https://arxiv.org/pdf/2408.08926). [Repo](https://github.com/andyzorigin/cybench).
+Thanks to Andy K. Zhang, Neil Perry, Riya Dulepet, Joey Ji, Celeste Menders, Justin W. Lin, Eliot Jones, Gashon Hussein, Samantha Liu, Donovan Jasper, Pura Peetathawatchai, Ari Glenn, Vikram Sivashankar, Daniel Zamoshchin, Leo Glikbarg, Derek Askaryar, Mike Yang, Teddy Zhang, Rishi Alluri, Nathan Tran, Rinnara Sangpisit, Polycarpos Yiorkadjis, Kenny Osele, Gautham Raghupathi, Dan Boneh, Daniel E. Ho, Percy Liang
+
+```
+@misc{
+  cybench
+  title={Cybench: A framework for evaluating cybersecurity capabilities and risks of language models},
+  author={Zhang, Andy K and Perry, Neil and Dulepet, Riya and Ji, Joey and Menders, Celeste and Lin, Justin W and Jones, Eliot and Hussein, Gashon and Liu, Samantha and Jasper, Donovan and others},
+  year={2024},
+  url={https://arxiv.org/abs/2408.08926}
+}
+```
+
+
+## Zhu et al.
+CVE-Bench authors. [Paper](https://arxiv.org/abs/2503.17332). [Repo](https://github.com/uiuc-kang-lab/cve-bench/blob/main/README.md).
+Thanks to Yuxuan Zhu and Antony Kellermann and Dylan Bowman and Philip Li and Akul Gupta and Adarsh Danda and Richard Fang and Conner Jensen and Eric Ihli and Jason Benn and Jet Geronimo and Avi Dhir and Sudhit Rao and Kaicheng Yu and Twm Stone and Daniel Kang.
+
+```
+@misc{
+    cvebench,
+    title={CVE-Bench: A Benchmark for AI Agents’ Ability to Exploit Real-World Web Application Vulnerabilities},
+    author={Yuxuan Zhu and Antony Kellermann and Dylan Bowman and Philip Li and Akul Gupta and Adarsh Danda and Richard Fang and Conner Jensen and Eric Ihli and Jason Benn and Jet Geronimo and Avi Dhir and Sudhit Rao and Kaicheng Yu and Twm Stone and Daniel Kang},
+    year={2025},
+    url={https://arxiv.org/abs/2503.17332}
+}
+```
