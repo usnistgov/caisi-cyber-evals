@@ -1,0 +1,27 @@
+services:
+  agent:
+    image: ${UCB_CONTAINER_REGISTRY}agent-environment:1.1.0
+    #build:
+    #  context: ./agent
+    init: true
+    volumes:
+      # For testing with shell scripts or pytest, we map <challenge_dir>/solution to /app
+      # and set an entrypoint of /app/entrypoint.sh.
+      # When running with inspect, we dynamically copy files from <cve_dir> depending on the variant
+      - ${DYNAMIC_FILE_DIR-/dev/null}:/app_ro
+    environment:
+      # A .env file can define helper functions in a variable - these will get sourced
+      # and be available in bash within the container
+      - HELPER_FUNCTIONS=${HELPER_FUNCTIONS:-}
+    x-default: true
+    depends_on:
+      - target
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+          pids: 8192
+        reservations:
+          cpus: '0.25'
+          memory: 512M

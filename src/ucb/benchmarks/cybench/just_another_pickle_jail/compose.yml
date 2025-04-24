@@ -1,0 +1,19 @@
+include:
+- ../../../containers/compose.yml
+
+services:
+  target:
+    image: ${UCB_CONTAINER_REGISTRY}just-another-pickle-jail:1.0.1
+    init: true
+    # [USEDIT] add resource constraints to prevent killing the host
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 4G
+          pids: 8192
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    #build:
+      #context: ./victim

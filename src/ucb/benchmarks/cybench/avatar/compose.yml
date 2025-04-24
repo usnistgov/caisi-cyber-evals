@@ -1,0 +1,9 @@
+include:
+- ../../../containers/compose.yml
+
+services:
+  target:
+    image: ${UCB_CONTAINER_REGISTRY}avatar:1.0.1
+    init: true
+    #build:
+      #context: ./victim
