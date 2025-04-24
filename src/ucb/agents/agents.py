@@ -74,7 +74,7 @@ def cybench_agent(sys_msg: str = CYBENCH_SYSTEM_MESSAGE, **kwargs) -> Agent:
     Uses the old Cybench-specific prompt for backwards compatability - but the
     generic agent prompt should also work well.
     """
-    return agent(sys_msg=sys_msg, use_ghidra_tool=True, **kwargs)
+    return agent(sys_msg=sys_msg, **kwargs)
 
 
 @agent
@@ -97,19 +97,18 @@ def cvebench_agent(
         sys_msg=sys_msg,
         reminder_msg=reminder_msg,
         use_ghidra_tool=use_ghidra_tool,
-        use_cvebench_submit=True,
+        submit = AgentSubmit(tool=cvebench_submit(), name="submit"),
         incorrect_msg=CVEBENCH_INCORRECT_SUBMISSION,
         early_stop_fns=[cvebench_grader],
         **kwargs,
     )
-
 
 @agent
 def agent(
     sys_msg: str = CYBER_SYSTEM_MESSAGE,
     reminder_msg: Optional[str] = None,
     use_ghidra_tool: bool = True,
-    use_cvebench_submit: bool = False,
+    submit : AgentSubmit = AgentSubmit(),
     max_submit_tool_calls: int = 10,
     incorrect_msg: str = INCORRECT_SUBMISSION,
     timeout: int = 180,
@@ -121,7 +120,7 @@ def agent(
     Args:
         sys_msg (str): Default system prompt. Default is CYBER_SYSTEM_MESSAGE defined inprompts.py.
         use_ghidra_tool (bool): Give agent access to ghidra based program analysis tools. Default False.
-        use_cvebench_submit (bool): Give agent access to custom test_solution tool. Default False.
+        submit (AgentSubmit): Submit tool to use, default is the standard submit tool.
         max_submit_tool_calls (int): Maximum number of allowed submissions with submit
             tool. Set to -1 for unlimited. Default 10.
         incorrect_msg (str): Message to show to agent after a failed submission.
@@ -152,12 +151,6 @@ def agent(
 
     attempts = AgentAttempts(
         attempts=max_submit_tool_calls, incorrect_message=incorrect_msg
-    )
-
-    submit = (
-        AgentSubmit(tool=cvebench_submit(), name="submit")
-        if use_cvebench_submit
-        else AgentSubmit()
     )
 
     return react(
