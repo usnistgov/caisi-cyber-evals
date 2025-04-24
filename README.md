@@ -117,7 +117,7 @@ Task level options can also be configured with the `-T` flag.
 
 Task options vary depending on the benchmark you select, but the `challenges` option is valid for all benchmarks:
 
-* `challenges: Optional[List[str]]`: List of task names to include. Seperate with commas (i.e., `-T challenges=one,two`).
+* `challenges: Optional[List[str]]`: List of task names to include. Separate with commas (i.e., `-T challenges=one,two`).
    You can select tasks by name across benchmarks. If unset, all tasks will be selected from the specified benchmarks.
 
 #### CVE-bench Task-Level Options:
@@ -191,10 +191,10 @@ deserve significant credit for their effort!
 
 ## UK AI Security Institute
 * Creators of [Inspect](https://github.com/UKGovernmentBEIS/inspect_ai/)
-* Creators of [Inspect evals](https://github.com/UKGovernmentBEIS/inspect_evals/) with fork of Cybench.
+* Creators of [Inspect evals](https://github.com/UKGovernmentBEIS/inspect_evals/) which contains a Cybench fork we drew inspiration from.
 * Creators of [Inspect cyber](https://github.com/UKGovernmentBEIS/inspect_cyber)
 
-## Cybench
+## Zhang et al.
 Cybench authors. [Paper](https://arxiv.org/pdf/2408.08926). [Repo](https://github.com/andyzorigin/cybench).
 Thanks to Andy K. Zhang, Neil Perry, Riya Dulepet, Joey Ji, Celeste Menders, Justin W. Lin, Eliot Jones, Gashon Hussein, Samantha Liu, Donovan Jasper, Pura Peetathawatchai, Ari Glenn, Vikram Sivashankar, Daniel Zamoshchin, Leo Glikbarg, Derek Askaryar, Mike Yang, Teddy Zhang, Rishi Alluri, Nathan Tran, Rinnara Sangpisit, Polycarpos Yiorkadjis, Kenny Osele, Gautham Raghupathi, Dan Boneh, Daniel E. Ho, Percy Liang
 
