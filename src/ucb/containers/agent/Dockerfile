@@ -50,3 +50,5 @@ WORKDIR /root/
 COPY helper /usr/local/bin/helper
 RUN chmod 555 /usr/local/bin/helper
 WORKDIR /root/
+
+CMD ["sleep", "infinity"]

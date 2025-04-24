@@ -21,7 +21,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-AGENT_NAME = "agent-environment:1.0.7"
+AGENT_NAME = "agent-environment:1.0.8"
 GHIDRA_NAME = "gaas:1.0.1"
 
 

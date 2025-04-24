@@ -1,6 +1,6 @@
 services:
   agent:
-    image: ${UCB_CONTAINER_REGISTRY}agent-environment:1.0.7
+    image: ${UCB_CONTAINER_REGISTRY}agent-environment:1.0.8
     #build:
     #  context: ./agent
     init: true
@@ -25,16 +25,3 @@ services:
         reservations:
           cpus: '0.25'
           memory: 512M
-  # The ghidra tool environment will be available to the decompile() and
-  # disassemble() tools.
-  #ghidra:
-  #  image: ${UCB_CONTAINER_REGISTRY}ghidra-environment:1.0.1
-  #  build:
-  #    context: ./ghidra
-  #  init: true
-  #  volumes:
-  #    - shared-volume:/root
-  #  network_mode: none
-
-#volumes:
-#  shared-volume:
