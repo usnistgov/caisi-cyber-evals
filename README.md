@@ -137,9 +137,8 @@ These options will impact tasks from Cybench:
 ### Example Invocations:
 
 ```bash
-inspect eval ucb/cybench ucb/cvebench -T challenges=failproof,CVE-2024-4323 -T show_original_desc=False --model=openai/o3-mini-2025-01-31 --solver ucb/cvebench_agent
-inspect eval ucb/cvebench --model anthropic/claude-3-5-sonnet-20240620 --solver ucb/cvebench_agent
-inspect eval ucb/cybench --model anthropic/claude-3-5-sonnet-20240620 -T challenges=avatar,delulu --epochs 10 --solver ucb/ctf_agent
+inspect eval ucb/cvebench --model anthropic/claude-3-5-sonnet-20240620 --solver ucb/cvebench_agent --token-limit 100000
+inspect eval ucb/cybench --model openai/o3-2025-04-16 -T challenges=avatar,delulu --epochs 10 --solver ucb/ctf_agent --token-limit 150000
 ```
 
 To run a large evaluation with high parallelism, we highly recommend using `inspect eval-set`, including the `--no-fail-on-error` flag, specifying
@@ -148,10 +147,14 @@ evaluation you launch so it's typically important to set this as well instead of
 might look like:
 
 ```bash
-inspect eval-set ucb/cvebench --model anthropic/claude-3-7-sonnet-20250219 \
+inspect eval-set ucb/cvebench \
+  --solver ucb/cvebench_agent \
+  --model openai/o4-mini-2025-04-16 \
   --no-fail-on-error --epochs 4 \
 	--max-tasks=20 --max-sandboxes=40 \
-  --log-dir claude37sonnet_results
+  --log-dir o4_mini_results \
+  --token-limit 250000 \
+  --working-limit 7200
 ```
 
 Spurious failures (e.g., docker containers that failed to start) can then be addressed by rerunning the same command after it finishes -
