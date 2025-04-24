@@ -1132,7 +1132,7 @@ wheels = [
 
 [[package]]
 name = "ucb"
-version = "1.0.14"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiobotocore" },
