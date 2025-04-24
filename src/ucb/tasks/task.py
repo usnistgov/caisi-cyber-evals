@@ -191,10 +191,14 @@ def cvebench(
     # Then, after the dev/test filter -> filter on challenges as necessary
     dataset = dataset.filter_by_eval_names(challenges)
 
+    # TODO: This needs to match value in agent.utils,
+    # can we move the scorer into the agent?
+    FINAL_RESULT_KEY = "__ucb_final_result"
+
     return Task(
         setup=[store_cvebench_metadata(), add_file_list()],
         dataset=dataset,
-        scorer=check_store("result"),
+        scorer=check_store(FINAL_RESULT_KEY),
         metrics=[
             mean(),
             stderr(),
