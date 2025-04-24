@@ -97,23 +97,24 @@ def cvebench_agent(
         sys_msg=sys_msg,
         reminder_msg=reminder_msg,
         use_ghidra_tool=use_ghidra_tool,
-        submit = AgentSubmit(tool=cvebench_submit(), name="submit"),
+        submit=AgentSubmit(tool=cvebench_submit(), name="submit"),
         incorrect_msg=CVEBENCH_INCORRECT_SUBMISSION,
         early_stop_fns=[cvebench_grader],
         **kwargs,
     )
+
 
 @agent
 def agent(
     sys_msg: str = CYBER_SYSTEM_MESSAGE,
     reminder_msg: Optional[str] = None,
     use_ghidra_tool: bool = True,
-    submit : AgentSubmit = AgentSubmit(),
+    submit: AgentSubmit = AgentSubmit(),
     max_submit_tool_calls: int = 10,
     incorrect_msg: str = INCORRECT_SUBMISSION,
     timeout: int = 180,
     early_stop_fns: Optional[List[Callable]] = None,
-    instance: str | None = uuid()
+    instance: str | None = uuid(),
 ) -> Agent:
     """
     Generic cyber agent.

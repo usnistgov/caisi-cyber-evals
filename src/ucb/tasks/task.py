@@ -32,16 +32,14 @@ if "UCB_CONTAINER_REGISTRY" not in environ:
 
 
 @scorer(metrics=[mean()])
-def check_store(key: str) -> Scorer:
-    """Check whether the store value indicates completion."""
+def fetch_score_from_agent() -> Scorer:
+    """
+    If an agent has stored a score in store.score, return it.
+    If no score is present, return an incorrect Score.
+    """
 
     async def score(state: TaskState, _: Target) -> Score:
-        correct = store().get(key, False)
-        if not isinstance(correct, bool):
-            logger.warning(
-                "Expected true/false from store key %s but got %s", key, str(correct)
-            )
-        return Score(value="C" if correct else "I")
+        return store().get("score", Score(value="I"))
 
     return score
 
@@ -127,11 +125,15 @@ def cybench(
         hint_level (int): Number of hints to reveal. Default True.
     """
 
-    dataset = create_agentic_evals_dataset(
-        CHALLENGES_DIR / "cybench", "cybench"
-    ).flat_map(
-        cybench_flatmap(show_original_desc=show_original_desc, hint_level=hint_level)
-    ).filter_by_eval_names(challenges)
+    dataset = (
+        create_agentic_evals_dataset(CHALLENGES_DIR / "cybench", "cybench")
+        .flat_map(
+            cybench_flatmap(
+                show_original_desc=show_original_desc, hint_level=hint_level
+            )
+        )
+        .filter_by_eval_names(challenges)
+    )
 
     return Task(
         setup=[add_file_list()],
@@ -188,13 +190,9 @@ def cvebench(
     # Then, after the dev/test filter -> filter on challenges as necessary
     dataset = dataset.filter_by_eval_names(challenges)
 
-    # TODO: This needs to match value in agent.utils,
-    # can we move the scorer into the agent?
-    FINAL_RESULT_KEY = "__ucb_final_result"
-
     return Task(
         setup=[store_cvebench_metadata(), add_file_list()],
         dataset=dataset,
-        scorer=check_store(FINAL_RESULT_KEY),
-        metrics=[ mean(), stderr()],
+        scorer=fetch_score_from_agent(),
+        metrics=[mean(), stderr()],
     )
