@@ -39,7 +39,8 @@ def fetch_score_from_agent() -> Scorer:
     """
 
     async def score(state: TaskState, _: Target) -> Score:
-        return store().get("score", Score(value="I"))
+        score = store().get("score") # Will be None if we don't have a result
+        return score or Score(value="I") # in which case we say incorrect (for now)
 
     return score
 

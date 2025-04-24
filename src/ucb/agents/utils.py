@@ -14,17 +14,6 @@ from inspect_ai.scorer import scorer, includes, mean, stderr, Scorer, Target, Sc
 from inspect_ai.solver import solver, TaskState
 
 
-@scorer(metrics=[mean()])
-def check_store(key: str) -> Scorer:
-    """Check whether the store value indicates completion."""
-
-    async def score(state: TaskState) -> Score:
-        correct = store().get(key, False)
-        return Score(value="C" if correct else "I")
-
-    return score
-
-
 def reconfigure_tool(method, add_reasoning=True, **kwargs):
     '''
     If add_reasoning is set, a @tool will be dynamically rewritten
