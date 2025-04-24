@@ -1,0 +1,3 @@
+include:
+- ../../../containers/compose.yml
+- ../../../containers/blank_target.yml

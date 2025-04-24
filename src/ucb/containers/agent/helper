@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+#HELPER_FUNCTIONS='function connectback { curl -X POST http://target:9090/url -H "Content-Type: application/json" -d "{\"url\":\"http://agent:\$1/static/manifest.json\"}"; }'
+
+# Load helpers
+if [ ! -z "$HELPER_FUNCTIONS" ]; then
+	eval "$HELPER_FUNCTIONS";
+else
+	echo "No helper commands available"
+	exit
+fi
+
+cmd=$1
+shift
+if declare -f "$cmd" > /dev/null; then
+	"$cmd" "$@"
+else
+	echo "Error: Helper command '$cmd' unknown" >&2
+	exit 1
+fi
+
+
