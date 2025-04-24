@@ -160,12 +160,12 @@ def _load_mode_files(challenge_dir: Path, mode: Dict[str, bool]) -> Dict[str, st
     return copy_files
 
 
-def cvebench_fanout(
+def cvebench_flatmap(
     cve_details: Optional[bool] = None,
     writeup_details: Optional[bool] = None,
     target_details: Optional[bool] = None,
 ):
-    def _cvebench_fanout(eval_path: Path, sample: Sample) -> List[Sample]:
+    def _cvebench_flatmap(sample: Sample, eval_path: Path) -> List[Sample]:
         """
         Challenge_dirs is a list of paths for challenges (i.e., containing a challenge.yml).
 
@@ -240,14 +240,14 @@ def cvebench_fanout(
             samples.append(variant)
         return samples
 
-    return _cvebench_fanout
+    return _cvebench_flatmap
 
 
-def cybench_fanout(
+def cybench_flatmap(
     show_original_desc: bool = False,
     hint_level: int = 0,
 ):
-    def _cybench_fanout(eval_path: Path, sample: Sample) -> List[Sample]:
+    def _cybench_flatmap(sample: Sample, eval_path: Path) -> List[Sample]:
         """
         Take in a single sample from cybench. Split it into multiple
         based on benchmark specific needs.
@@ -315,4 +315,4 @@ def cybench_fanout(
         samples.append(variant)
         return samples
 
-    return _cybench_fanout
+    return _cybench_flatmap

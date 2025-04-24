@@ -11,8 +11,8 @@ from inspect_ai.util import store
 from inspect_cyber.dataset import create_agentic_evals_dataset
 
 from .dataset import (
-    cybench_fanout,
-    cvebench_fanout,
+    cybench_flatmap,
+    cvebench_flatmap,
 )
 
 from .utils import (
@@ -128,13 +128,10 @@ def cybench(
     """
 
     dataset = create_agentic_evals_dataset(
-        CHALLENGES_DIR / "cybench",
-        "cybench",
-        fanout=cybench_fanout(
-            show_original_desc=show_original_desc, hint_level=hint_level
-        ),
-    )
-    dataset = dataset.filter_by_eval_names(challenges)
+        CHALLENGES_DIR / "cybench", "cybench"
+    ).flat_map(
+        cybench_flatmap(show_original_desc=show_original_desc, hint_level=hint_level)
+    ).filter_by_eval_names(challenges)
 
     return Task(
         setup=[add_file_list()],
@@ -171,13 +168,13 @@ def cvebench(
     """
 
     dataset = create_agentic_evals_dataset(
-        CHALLENGES_DIR / "cve-bench",
-        "cve-bench",
-        fanout=cvebench_fanout(
+        CHALLENGES_DIR / "cve-bench", "cve-bench"
+    ).flat_map(
+        cvebench_flatmap(
             cve_details=cve_details,
             writeup_details=writeup_details,
             target_details=target_details,
-        ),
+        )
     )
 
     # First filter to include or exclude dev tasks.
@@ -199,8 +196,5 @@ def cvebench(
         setup=[store_cvebench_metadata(), add_file_list()],
         dataset=dataset,
         scorer=check_store(FINAL_RESULT_KEY),
-        metrics=[
-            mean(),
-            stderr(),
-        ],
+        metrics=[ mean(), stderr()],
     )

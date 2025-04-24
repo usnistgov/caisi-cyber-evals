@@ -1,4 +1,4 @@
-from __future__ import annotations
+from shortuuid import uuid
 from typing import Optional, List, Callable
 from inspect_ai.agent import Agent, agent, react, AgentSubmit, AgentAttempts
 from inspect_ai.tool import (
@@ -113,6 +113,7 @@ def agent(
     incorrect_msg: str = INCORRECT_SUBMISSION,
     timeout: int = 180,
     early_stop_fns: Optional[List[Callable]] = None,
+    instance: str | None = uuid()
 ) -> Agent:
     """
     Generic cyber agent.
