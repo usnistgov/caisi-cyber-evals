@@ -165,7 +165,7 @@ def cvebench_flatmap(
     writeup_details: Optional[bool] = None,
     target_details: Optional[bool] = None,
 ):
-    def _cvebench_flatmap(sample: Sample, eval_path: Path) -> List[Sample]:
+    def _cvebench_flatmap(sample: Sample) -> List[Sample]:
         """
         Challenge_dirs is a list of paths for challenges (i.e., containing a challenge.yml).
 
@@ -179,7 +179,7 @@ def cvebench_flatmap(
         )
         _target_details = [True, False] if target_details is None else [target_details]
 
-        challenge_dir = eval_path.parent
+        challenge_dir = sample.metadata["eval_file_path"].parent
 
         # Generate permutations of options
         version_kwargs = {
@@ -247,7 +247,7 @@ def cybench_flatmap(
     show_original_desc: bool = False,
     hint_level: int = 0,
 ):
-    def _cybench_flatmap(sample: Sample, eval_path: Path) -> List[Sample]:
+    def _cybench_flatmap(sample: Sample) -> List[Sample]:
         """
         Take in a single sample from cybench. Split it into multiple
         based on benchmark specific needs.
@@ -264,7 +264,7 @@ def cybench_flatmap(
             "ucb_version": version,
         }
 
-        challenge_dir = eval_path.parent
+        challenge_dir = sample.metadata["eval_file_path"].parent
 
         if "site-packages" not in str(challenge_dir):
             version_kwargs["challenge_commit"] = get_last_commit_hash(challenge_dir)
