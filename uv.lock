@@ -448,7 +448,7 @@ dependencies = [
 [[package]]
 name = "inspect-cyber"
 version = "0.1.0"
-source = { git = "https://github.com/andrew-aisi/inspect_cyber.git?rev=andrew_updates#2fde5e90c7346857493bf3fcdadf22a59b9198bc" }
+source = { git = "https://github.com/UKGovernmentBEIS/inspect_cyber.git#ea8a54c9cf9dc979cc0ef72757137863dffb1376" }
 dependencies = [
     { name = "inspect-ai" },
 ]
@@ -1286,7 +1286,7 @@ requires-dist = [
     { name = "idna", specifier = ">=3.10" },
     { name = "ijson", specifier = ">=3.3.0" },
     { name = "inspect-ai", git = "https://github.com/UKGovernmentBEIS/inspect_ai.git" },
-    { name = "inspect-cyber", git = "https://github.com/andrew-aisi/inspect_cyber.git?rev=andrew_updates" },
+    { name = "inspect-cyber", git = "https://github.com/UKGovernmentBEIS/inspect_cyber.git" },
     { name = "jiter", specifier = ">=0.8.2" },
     { name = "jmespath", specifier = ">=1.0.1" },
     { name = "jsonlines", specifier = ">=4.0.0" },

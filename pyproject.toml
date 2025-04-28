@@ -128,5 +128,5 @@ search = "version = \"{current_version}\""
 replace = "version = \"{new_version}\""
 
 [tool.uv.sources]
-inspect-cyber = { git = "https://github.com/andrew-aisi/inspect_cyber.git", rev = "andrew_updates" }
 inspect-ai = { git = "https://github.com/UKGovernmentBEIS/inspect_ai.git" }
+inspect-cyber = { git = "https://github.com/UKGovernmentBEIS/inspect_cyber.git" }
