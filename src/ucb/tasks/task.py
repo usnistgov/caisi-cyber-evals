@@ -7,19 +7,13 @@ from typing import List
 from inspect_ai import Task, task
 from inspect_ai.scorer import scorer, includes, mean, stderr, Scorer, Target, Score
 from inspect_ai.solver import solver, TaskState
-from inspect_ai.util import store
+from inspect_ai.util import store, sandbox
 from inspect_cyber.dataset import create_agentic_evals_dataset
 
 from .dataset import (
     cybench_flatmap,
     cvebench_flatmap,
 )
-
-from .utils import (
-    validate_host_files,
-    resolve_path,
-)
-
 
 logger = logging.getLogger(__name__)
 CHALLENGES_DIR = Path(__file__).parent.parent / "challenges"
@@ -75,28 +69,25 @@ def add_file_list():
     location in the sandbox.
     """
 
-    async def solve(state, generate):
-        meta = state.metadata
-        provided: List[str] = meta.get("files", [])
+    async def solve(state, _):
+        provided: List[str] = state.metadata.get("files", [])
         if not provided:
             return state
 
-        # Optionally validate host files
-        host_files = meta.get("host_files", [])
-        if host_root_s := meta.get("host_root"):
-            root = Path(host_root_s)
-            try:
-                validate_host_files(root, host_files)
-            except FileNotFoundError as e:
-                logging.error("Host file validation failed: %s", e)
-                raise
+        guest_cwd = '/'
+        # If we have any relative sandbox paths, we'll need to
+        # resolve to absolute. It's probably /root/ though.
+        if any(not Path(p).is_absolute() for p in provided):
+            pwd_result = await sandbox().exec(["pwd"])
+            if not pwd_result.success:
+                raise RuntimeError("Could not identify sandbox working working directory")
+            guest_cwd = pwd_result.stdout.strip()
 
-        # Resolve every guest path
-        guest_cwd: Optional[Path] = None
-        resolved_paths: List[Path] = []
-        for p in provided:
-            path_obj, guest_cwd = await resolve_path(p, guest_cwd)
-            resolved_paths.append(path_obj)
+        resolved_paths: List[Path] = [
+            Path(p) if Path(p).is_absolute()
+            else (guest_cwd / p)
+            for p in provided
+        ]
 
         # Mutate the final message to add our payload.
         state.messages[-1].text += (
@@ -195,5 +186,34 @@ def cvebench(
         setup=[store_cvebench_metadata(), add_file_list()],
         dataset=dataset,
         scorer=fetch_score_from_agent(),
+        metrics=[mean(), stderr()],
+    )
+
+
+@task
+def _custom(
+    root: str,
+    challenges: str | list[str] | None = None,
+) -> Task:
+    """
+    Developer interface. Create samples directly from a directory. No
+    fanout.
+
+    Args:
+        root (str): Path to directory from which samples.yaml files will be loaded.
+        challenges (str | list[str] | None): The path to the challenge directory or a
+            list of challenge directories to load. Relative paths are resolved relative to
+            the challenges directory. If None, all challenges are loaded.
+    """
+
+    if not root:
+        raise ValueError("Root dir must be set via -T root=...")
+
+    dataset = create_agentic_evals_dataset(Path(root).absolute(), "custom").filter_by_eval_names(challenges)
+
+    return Task(
+        setup=[add_file_list()],
+        dataset=dataset,
+        scorer=[fetch_score_from_agent(), includes()], # Matching on includes won't stop the run!
         metrics=[mean(), stderr()],
     )
