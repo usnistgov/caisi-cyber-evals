@@ -4,7 +4,7 @@ from inspect_ai.agent import Agent, agent, react, AgentSubmit, AgentAttempts
 from inspect_ai.tool import (
     # bash_session,
     # python,
-    # bash,
+    # bash, [Lukas note] could remove
     think,
 )
 

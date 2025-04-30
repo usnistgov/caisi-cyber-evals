@@ -41,7 +41,7 @@ source .venv/bin/activate
 2. Install ucb:
 
 ```
-uv sync
+uv sync --frozen
 ```
 
 3. Configure variables for your run.
@@ -49,7 +49,7 @@ uv sync
 You should now create a `.env` file and add the relevant API keys to it.
 It is highly recommend to use a container registry via `UCB_CONTAINER_REGISTRY` which can
 point at a domain and a directory prefix, e.g., "gitlab.com/aisi/cyber/ucb/". This should
-end with a trailing slash.
+end with a trailing slash. [Lukas note]: will the people you share this code with have access to the container registry? If not, might need another way for them to launch gaas, because gaas seems to depend on the registry.
 
 ```bash
 ucb init-env # Populate .env from a template
@@ -68,6 +68,7 @@ want to push the images to a container registry, assuming you have set one up.
 ```bash
 ucb gaas
 ```
+[Lukas note] Does this work? Just flagging that it 
 
 6. Confirm functionality by running a single task with a small budget:
 ```bash

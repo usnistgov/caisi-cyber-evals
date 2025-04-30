@@ -95,6 +95,7 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["ucb", "ucb.inspect", "ucb.containers.agent"]
+[Lukas note] minor: could exclude this TODO to be cleaner
 # TODO: exclude solutions and exploit dirs within challenges
 # or dynamically pull in challenge.yml file keys and ignore
 # everything else
