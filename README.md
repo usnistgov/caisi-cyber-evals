@@ -1,7 +1,7 @@
 # AISI Unified Cyber Benchmark (UCB)
 
 This is a BETA RELEASE of the [US AI Safety Institute](https://www.nist.gov/aisi)'s Unified Cyber Benchmark
-to assist in evaluating cyber capabilities of AI agents. We are limiting this initial release but hoping to
+to assist in evaluating cyber capabilities of AI agents. We are limiting this initial release, but hoping to
 open source this repository soon.
 
 Please direct questions, comments, and requests for further sharing to Andrew.Fasano@nist.gov.
