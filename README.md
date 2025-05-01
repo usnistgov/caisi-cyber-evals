@@ -1,4 +1,4 @@
-# AISI Cyber Evaluations
+	# AISI Cyber Evaluations
 
 This repository packages a few benchmarks and agents used by the [US AI Safety Institute](https://www.nist.gov/aisi)
 for cyber capability evaluations of AI systems. It aims to provide a standard, user-friendly interface to running
@@ -15,7 +15,7 @@ The package currently includes 2 agents and 2 benchmarks.
 * The [upstream repository](https://github.com/uiuc-kang-lab/cve-bench) has 40 tasks.
 
 ### Cybench Benchmark
-* This code is based off the public cybench fork maintained by the UK AI Safety Institute
+* This code is based off the public cybench fork maintained by the UK AI Security Institute
 [here](https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench), originally
 developed by Andy Zhang et al. [paper](https://arxiv.org/abs/2408.08926).
 * AISI added original task descriptions, and updated system/task level prompts.
