@@ -1,4 +1,4 @@
-	# AISI Cyber Evaluations
+# AISI Cyber Evaluations
 
 This repository packages a few benchmarks and agents used by the [US AI Safety Institute](https://www.nist.gov/aisi)
 for cyber capability evaluations of AI systems. It aims to provide a standard, user-friendly interface to running
