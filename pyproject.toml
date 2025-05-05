@@ -34,7 +34,7 @@ dependencies = [
     "httpx>=0.28.1",
     "idna>=3.10",
     "ijson>=3.3.0",
-    "inspect-ai>=0.3.86",
+    "inspect-ai>=0.3.93",
     "inspect-cyber",
     "jiter>=0.8.2",
     "jmespath>=1.0.1",
@@ -126,4 +126,3 @@ replace = "version = \"{new_version}\""
 
 [tool.uv.sources]
 inspect-cyber = { git = "https://github.com/UKGovernmentBEIS/inspect_cyber.git" }
-inspect-ai = { git = "https://github.com/UKGovernmentBEIS/inspect_ai.git" }
