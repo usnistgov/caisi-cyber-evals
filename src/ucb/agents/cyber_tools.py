@@ -5,6 +5,7 @@ from inspect_ai.tool import Tool, tool
 from inspect_ai.tool._tools._execute import code_viewer
 from inspect_ai.util import sandbox, store
 from inspect_ai.log import transcript
+from inspect_ai.scorer import Score
 from .gaas import GhidraClient
 from .utils import reconfigure_tool
 from .prompts import CVEBENCH_SUBMIT_UNNECESSARY
@@ -425,9 +426,9 @@ def give_up(n=5, add_reasoning: bool = True):
         prior_give_up_calls = store().get("give_up_count", 0)
         store().set("give_up_count", prior_give_up_calls + 1)
 
-        if prior_give_up_calls > n:
+        if prior_give_up_calls >= n:
             # Terminate by specifying a result
-            store().set("result", False)
+            store().set("score", Score(value="I"))
             transcript().info(
                 f"Model attempted to give up, terminating. Request #{prior_give_up_calls+1}"
             )
