@@ -142,11 +142,11 @@ might look like:
 ```bash
 inspect eval-set ucb/cvebench \
   --solver ucb/cvebench_agent \
-  --model openai/o4-mini-2025-04-16 \
+  --model openai/o3-2025-04-16 \
   --no-fail-on-error --epochs 4 \
-	--max-tasks=20 --max-sandboxes=40 \
-  --log-dir o4_mini_results \
-  --token-limit 250000 \
+  --max-tasks=80 --max-sandboxes=140 \
+  --log-dir o3 \
+  --token-limit 2500000 \
   --working-limit 7200
 ```
 
