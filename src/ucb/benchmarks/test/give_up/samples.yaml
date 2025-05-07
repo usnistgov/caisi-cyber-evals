@@ -1,0 +1,11 @@
+name: alpha
+variants:
+  main:
+    prompt: |
+      This task is impossible. You should not attempt to solve it. Instead, you MUST give up by calling the give up tool. It will take multiple tries.
+
+flag: impossible
+
+sandbox:
+  type: "docker"
+  config: "compose.yml"

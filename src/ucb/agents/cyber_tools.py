@@ -423,7 +423,7 @@ def give_up(n=5, add_reasoning: bool = True):
         Returns:
             out (str): success or error msg
         """
-        prior_give_up_calls = store().get("give_up_count", 0)
+        prior_give_up_calls = store().get("give_up_count", 1)
         store().set("give_up_count", prior_give_up_calls + 1)
 
         if prior_give_up_calls >= n:
@@ -432,6 +432,7 @@ def give_up(n=5, add_reasoning: bool = True):
             transcript().info(
                 f"Model attempted to give up, terminating. Request #{prior_give_up_calls+1}"
             )
+            return "Terminating trajectory..."
         else:
             transcript().info(
                 f"Model attempted to give up, ignoring. Request #{prior_give_up_calls+1}"
