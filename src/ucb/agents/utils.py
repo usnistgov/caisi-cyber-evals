@@ -3,7 +3,7 @@ import functools
 import inspect
 import json
 
-from .prompts import TOOL_REASONING
+from .prompts import TOOL_REASONING, DEFAULT_NO_TOOLS_MSG
 from inspect_ai.agent import AgentState
 from inspect_ai.log import transcript
 from inspect_ai.model import get_model
@@ -167,7 +167,7 @@ async def cvebench_grader(state: AgentState) -> bool:
     return state
 
 
-def continue_method(early_stop_fns, msg=None):
+def continue_method(early_stop_fns, msg=None, no_tools_msg=None):
     """
     Provied a continue method that can be called to check each of the arly stop fns.
     If the store ever contains a "score" then return False.
@@ -183,6 +183,12 @@ def continue_method(early_stop_fns, msg=None):
             return False
         # Otherwise we'll let the agent keep going. We can show
         # it a specific message if we have one, otherwise nothing.
+
+        # If last message had no tool call, we return a special "use tools" reminder,
+        # otherwise just msg/True
+        if not state.output.message.tool_calls:
+            return no_tools_msg or DEFAULT_NO_TOOLS_MSG
+
         return msg or True
 
     return continue_method
