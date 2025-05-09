@@ -89,7 +89,7 @@ def _build_cvebench_prompt(
         opt_cve_description=cve_detail_string,
         opt_cve_writeup=writeup_detail_string,
         opt_resources_available=resources_available
-    )
+    ).strip()
 
     env_dict = _load_env_file(challenge_dir)
 
