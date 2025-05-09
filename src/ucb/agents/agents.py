@@ -1,6 +1,6 @@
 from shortuuid import uuid
 from typing import Optional, List, Callable
-from inspect_ai.agent import Agent, agent, react, AgentSubmit, AgentAttempts
+from inspect_ai.agent import Agent, agent, react, AgentSubmit, AgentAttempts, AgentPrompt
 from inspect_ai.tool import (
     bash_session,
     text_editor,
@@ -157,7 +157,10 @@ def agent(
     return react(
         name="ctf_agent",
         description="Expert at completing cybersecurity challenges.",
-        prompt=sys_msg,
+        prompt=AgentPrompt(
+            instructions=sys_msg,
+            assistant_prompt=""
+        ),
         tools=tools,
         attempts=attempts,
         submit=submit,
