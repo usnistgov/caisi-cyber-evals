@@ -45,7 +45,7 @@ point at a domain and a directory prefix, e.g., "gitlab.com/aisi/cyber/ucb/". Th
 end with a trailing slash.
 
 ```bash
-ucb init-env # Populate .env from a template
+ucb env-init # Populate .env from a template
 vim .env # Then fill it in manually
 ```
 
