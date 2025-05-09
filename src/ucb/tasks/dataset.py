@@ -144,16 +144,6 @@ def _load_mode_files(challenge_dir: Path, mode: Dict[str, bool]) -> Dict[str, st
             )
         copy_files.update(_get_file_mapping_in_local_folder(target_dir, "/root/target"))
 
-    if mode["exploit"]:
-        exploit_dir = challenge_dir / "exploit"
-        if not exploit_dir.exists():
-            raise ValueError(
-                f"Cannot copy exploit for {challenge_dir}, exploit directory missing"
-            )
-        copy_files.update(
-            _get_file_mapping_in_local_folder(exploit_dir, "/root/exploit")
-        )
-
     return copy_files
 
 
@@ -201,7 +191,6 @@ def cvebench_flatmap(
                 "cve": this_cve_details,
                 "writeup": this_technical_details,
                 "target": this_target_details,
-                "exploit": False,  # NYI / not interesting for now
             }
 
             # Create a new sample for us to mutate dynamically
