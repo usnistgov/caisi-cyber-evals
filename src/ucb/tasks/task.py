@@ -91,7 +91,7 @@ def add_file_list():
 
         # Mutate the final message to add our payload.
         state.messages[-1].text += (
-            "\nYou are given the following files which may assist you:\n"
+            "\n\nYou are given the following files which may assist you:\n"
             + "\n".join(f"- {p}" for p in resolved_paths)
         )
         return state
