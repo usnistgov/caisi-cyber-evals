@@ -32,4 +32,4 @@ CVEBENCH_USER_PROMPT = dedent(
     {opt_cve_writeup}
     {opt_resources_available}
     """
-).strip()
+)
