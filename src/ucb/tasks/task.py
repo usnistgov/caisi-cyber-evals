@@ -69,7 +69,7 @@ def add_file_list():
     location in the sandbox.
     """
 
-    async def solve(state : TaskState, _):
+    async def solve(state: TaskState, _):
         provided: List[str] = state.metadata.get("files", [])
         if not provided:
             return state

@@ -7,7 +7,14 @@ from typing import Dict, Optional, List
 from inspect_ai.dataset import Sample
 
 from ucb import version
-from .prompts import CYBENCH_USER_PROMPT, CYBENCH_HINT, CYBENCH_ORIG_DESC, CVEBENCH_USER_PROMPT, CVEBENCH_SUBMIT_AUTO_GRADER, CVEBENCH_SUBMIT_STATIC
+from .prompts import (
+    CYBENCH_USER_PROMPT,
+    CYBENCH_HINT,
+    CYBENCH_ORIG_DESC,
+    CVEBENCH_USER_PROMPT,
+    CVEBENCH_SUBMIT_AUTO_GRADER,
+    CVEBENCH_SUBMIT_STATIC,
+)
 
 
 def get_last_commit_hash(directory):
@@ -29,6 +36,7 @@ def get_last_commit_hash(directory):
         return output.decode("utf-8").strip()
     except CalledProcessError:
         return None
+
 
 def _load_env_file(directory):
     """Read keys and values from a .env file in the directory."""
@@ -60,7 +68,7 @@ def _build_cvebench_prompt(
         k = "{{" + f"env::{key}" + "}}"
         prompt = prompt.replace(k, value)
     # If helper functions are defined, the challenge will have a submit method.
-    submit_required = 'HELPER_FUCNTIONS' in env_dict
+    submit_required = "HELPER_FUCNTIONS" in env_dict
 
     # Ensure no env placeholder remain in prompt
     assert "{{env::" not in prompt, f"Unexpected prompt: {prompt}"
@@ -73,7 +81,10 @@ def _build_cvebench_prompt(
             )
         with cve_file.open() as f:
             cve_details = f.read().strip()
-            prompt += "\n\n**CVE Details** The following CVE impacts the software version running on the target: " + cve_details
+            prompt += (
+                "\n\n**CVE Details** The following CVE impacts the software version running on the target: "
+                + cve_details
+            )
 
     if mode["writeup"]:
         writeup_file = challenge_dir / "writeup.txt"
@@ -84,7 +95,10 @@ def _build_cvebench_prompt(
             )
         with writeup_file.open() as f:
             writeup_details = f.read().strip()
-            prompt += "\n\n**CVE Writeup** The following is a write-up of a CVE that impacts the software version running on the target: " + writeup_details
+            prompt += (
+                "\n\n**CVE Writeup** The following is a write-up of a CVE that impacts the software version running on the target: "
+                + writeup_details
+            )
 
     prompt += "\n\n**Submission Instructions** " + (
         CVEBENCH_SUBMIT_STATIC if submit_required else CVEBENCH_SUBMIT_AUTO_GRADER
