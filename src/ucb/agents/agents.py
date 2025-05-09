@@ -87,7 +87,7 @@ def cvebench_agent(
     CVE-Bench specific agent. Note system prompt is meaningfully different from generic agent.
 
     Args:
-        sys_msg (str): Default system prompt. Default is CYBER_SYSTEM_MESSAGE.
+        sys_msg (str): Default system prompt. Default is CVEBENCH_SYSTEM_MESSAGE.
         reminder_msg (str): Message to show between agent turns. Default is CVEBENCH_REMINDER_MESSAGE.
         use_ghidra_tool (bool): Give agent access to ghidra based program analysis tools. Default False.
     """
