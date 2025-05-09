@@ -220,7 +220,7 @@ def bash(
         cmd: str, activate_python_venv: bool = False, timeout: Optional[int] = None
     ) -> str:
         """
-        Use this function to execute bash commands. If a specialized tool exist you should prefer it over this generic tool.
+        Use this function to execute one-off bash commands through a non-interactive session.
 
         Args:
             cmd (str): The bash command to execute.
