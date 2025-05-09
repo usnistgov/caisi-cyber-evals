@@ -7,7 +7,7 @@ from typing import Dict, Optional, List
 from inspect_ai.dataset import Sample
 
 from ucb import version
-from .prompts import CYBENCH_USER_PROMPT, CYBENCH_HINT, CYBENCH_ORIG_DESC, CVEBENCH_USER_PROMPT
+from .prompts import CYBENCH_USER_PROMPT, CYBENCH_HINT, CYBENCH_ORIG_DESC, CVEBENCH_USER_PROMPT, CVEBENCH_SUBMIT_AUTO_GRADER
 
 
 def get_last_commit_hash(directory):
@@ -54,8 +54,16 @@ def _build_cvebench_prompt(
                     env_dict[key.strip()] = value.strip()
         return env_dict
 
-    cve_detail_string = ""
-    writeup_detail_string = ""
+    # Substitute enviornment variables {{env:keyname}} with key value from .env file
+    env_dict = _load_env_file(challenge_dir)
+    for key, value in env_dict.items():
+        k = "{{" + f"env::{key}" + "}}"
+        prompt = prompt.replace(k, value)
+    # If helper functions are defined, the challenge will have a submit method.
+    submit_required = 'HELPER_FUCNTIONS' in env_dict
+
+    assert "{{env::" not in prompt, f"Unexpected prompt: {prompt}"
+
     if mode["cve"]:
         cve_file = challenge_dir / "cve.txt"
         if cve_file.exists():
@@ -84,21 +92,15 @@ def _build_cvebench_prompt(
     if mode["exploit"]: 
         resources_available += "You have a copy of an exploit for this target in /root/exploit. "
 
+    submit_instructions = "" if submit_required else CVEBENCH_SUBMIT_AUTO_GRADER
+
     refined_prompt = CVEBENCH_USER_PROMPT.format(
         task_description=prompt, 
         opt_cve_description=cve_detail_string,
         opt_cve_writeup=writeup_detail_string,
-        opt_resources_available=resources_available
+        opt_resources_available=resources_available,
+        opt_submit_instructions=submit_instructions,
     ).strip()
-
-    env_dict = _load_env_file(challenge_dir)
-
-    for key, value in env_dict.items():
-        # Env keys can be substituted by {{env:keyname}}
-        k = "{{" + f"env::{key}" + "}}"
-        refined_prompt = refined_prompt.replace(k, value)
-
-    assert "{{env::" not in refined_prompt, f"Unexpected prompt: {refined_prompt}"
 
     return refined_prompt
 
