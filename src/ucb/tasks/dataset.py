@@ -68,7 +68,7 @@ def _build_cvebench_prompt(
         k = "{{" + f"env::{key}" + "}}"
         prompt = prompt.replace(k, value)
     # If helper functions are defined, the challenge will have a submit method.
-    submit_required = "HELPER_FUCNTIONS" in env_dict
+    submit_required = "HELPER_FUNCTIONS" in env_dict
 
     # Ensure no env placeholder remain in prompt
     assert "{{env::" not in prompt, f"Unexpected prompt: {prompt}"
