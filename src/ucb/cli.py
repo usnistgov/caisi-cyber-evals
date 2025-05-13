@@ -77,15 +77,15 @@ def build_core_containers(container_dir, image_base, push=True):
             run_command(["docker", "push", image_base + tag])
 
 
-def build_challenge_images(challenges_dir, multithread=True, push=True):
+def build_challenge_images(benchmarks_dir, multithread=True, push=True):
     """
     Find all docker compose temporary files (compose.y*ml.tmp) in the challenges
     directory and run their build (with --push) commands in parallel.
     """
-    pattern = os.path.join(challenges_dir, "**", "compose.y*ml.tmp")
+    pattern = os.path.join(benchmarks_dir, "**", "compose.y*ml.tmp")
     compose_files = glob.glob(pattern, recursive=True)
     if not compose_files:
-        logger.warning("No compose files found in %s", challenges_dir)
+        logger.warning("No compose files found in %s", benchmarks_dir)
         return
 
     if multithread:
@@ -225,8 +225,8 @@ def build(args):
     Entrypoint for building (and optionally pushing) container images.
     """
 
-    challenges_dir = os.path.abspath(args.challenges_dir)
-    container_dir = os.path.join(os.path.dirname(challenges_dir), "containers")
+    benchmarks_dir = os.path.abspath(args.benchmarks_dir)
+    container_dir = os.path.join(os.path.dirname(benchmarks_dir), "containers")
 
     image_base = get_env_variable("UCB_CONTAINER_REGISTRY")
     logger.info("Processing core images with docker image base = %s", image_base)
@@ -236,18 +236,18 @@ def build(args):
         build_core_containers(container_dir, image_base, args.push)
 
     # Modify compose files (create temporary files with .tmp suffix)
-    compose_pattern = os.path.join(challenges_dir, "**", "compose.y*")
+    compose_pattern = os.path.join(benchmarks_dir, "**", "compose.y*")
     modify_compose_files(compose_pattern)
 
     # Build challenge images using modified compose files (which have .tmp extension)
     # Will run with docker build --push if push arg, but we'll also explicitly push later
-    build_challenge_images(challenges_dir, multithread=args.multithread, push=args.push)
+    build_challenge_images(benchmarks_dir, multithread=args.multithread, push=args.push)
     logger.info("All containers built.")
 
     if args.push:
         logger.info("Pushing containers to registry: %s", image_base)
         # Collect unique container images from docker compose config output
-        images = extract_unique_images(challenges_dir)
+        images = extract_unique_images(benchmarks_dir)
         logger.debug("Collected container images to push:")
         for img in sorted(images):
             logger.debug(img)
@@ -265,14 +265,14 @@ def pull(args):
     Entrypoint for pulling images.
     """
 
-    challenges_dir = os.path.abspath(args.challenges_dir)
+    benchmarks_dir = os.path.abspath(args.benchmarks_dir)
 
     image_base = get_env_variable("UCB_CONTAINER_REGISTRY")
     logger.info("Processing core images with docker image base = %s", image_base)
 
     # Extract unique images from all compose files.
     logger.info("Extracting unique image names from all compose files...")
-    unique_images = extract_unique_images(challenges_dir)
+    unique_images = extract_unique_images(benchmarks_dir)
     unique_images.update([image_base + AGENT_NAME, image_base + GHIDRA_NAME])
 
     logger.info("Identified %d unique images to pull", len(unique_images))
@@ -335,17 +335,17 @@ def env_init(args):
 
 
 def main():
-    with importlib.resources.path("ucb", "challenges") as src:
-        default_challenges_dir = src
+    with importlib.resources.path("ucb", "benchmarks") as src:
+        default_benchmarks_dir = src
 
     # Global parser
     parser = argparse.ArgumentParser(
         description=f"Manage container images: build/push, pull, or GAAS.\n\nUCB version {version}"
     )
     parser.add_argument(
-        "--challenges-dir",
-        default=default_challenges_dir,
-        help=f"Path to the challenges directory containing compose files (default: {default_challenges_dir})",
+        "--benchmarks-dir",
+        default=default_benchmarks_dir,
+        help=f"Path to the benchmarks directory containing compose files (default: {default_benchmarks_dir})",
     )
 
     # Create subparsers for each subcommand
