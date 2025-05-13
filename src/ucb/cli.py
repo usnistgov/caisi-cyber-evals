@@ -235,26 +235,27 @@ def build(args):
     if not args.skipcore:
         build_core_containers(container_dir, image_base, args.push)
 
-    # Modify compose files (create temporary files with .tmp suffix)
-    compose_pattern = os.path.join(benchmarks_dir, "**", "compose.y*")
-    modify_compose_files(compose_pattern)
+    if not args.onlycore:
+        # Modify compose files (create temporary files with .tmp suffix)
+        compose_pattern = os.path.join(benchmarks_dir, "**", "compose.y*")
+        modify_compose_files(compose_pattern)
 
-    # Build challenge images using modified compose files (which have .tmp extension)
-    # Will run with docker build --push if push arg, but we'll also explicitly push later
-    build_challenge_images(benchmarks_dir, multithread=args.multithread, push=args.push)
-    logger.info("All containers built.")
+        # Build challenge images using modified compose files (which have .tmp extension)
+        # Will run with docker build --push if push arg, but we'll also explicitly push later
+        build_challenge_images(benchmarks_dir, multithread=args.multithread, push=args.push)
+        logger.info("All containers built.")
 
-    if args.push:
-        logger.info("Pushing containers to registry: %s", image_base)
-        # Collect unique container images from docker compose config output
-        images = extract_unique_images(benchmarks_dir)
-        logger.debug("Collected container images to push:")
-        for img in sorted(images):
-            logger.debug(img)
+        if args.push:
+            logger.info("Pushing containers to registry: %s", image_base)
+            # Collect unique container images from docker compose config output
+            images = extract_unique_images(benchmarks_dir)
+            logger.debug("Collected container images to push:")
+            for img in sorted(images):
+                logger.debug(img)
 
-        # Push images that include IMAGE_BASE
-        push_images(images, image_base)
-        logger.info("All containers pushed to %s", image_base)
+            # Push images that include IMAGE_BASE
+            push_images(images, image_base)
+            logger.info("All containers pushed to %s", image_base)
 
     # Cleanup temporary files
     cleanup_temp_files(compose_pattern + ".tmp")
@@ -372,6 +373,13 @@ def main():
         action=argparse.BooleanOptionalAction,
         default=False,
         help="Skip buliding core images: agent and gaas (default: False)",
+    )
+
+    parser_build.add_argument(
+        "--onlycore",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Only buliding core images: agent and gaas (default: False)",
     )
 
     # Pull subcommand
