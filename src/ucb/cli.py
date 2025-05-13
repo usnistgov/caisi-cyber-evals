@@ -232,14 +232,16 @@ def build(args):
     logger.info("Processing core images with docker image base = %s", image_base)
 
     # Build core containers and push if requested.
-    #build_core_containers(container_dir, image_base, args.push)
+    if not args.skipcore:
+        build_core_containers(container_dir, image_base, args.push)
 
     # Modify compose files (create temporary files with .tmp suffix)
     compose_pattern = os.path.join(challenges_dir, "**", "compose.y*")
     modify_compose_files(compose_pattern)
 
     # Build challenge images using modified compose files (which have .tmp extension)
-    build_challenge_images(challenges_dir, multithread=args.multithread)
+    # Will run with docker build --push if push arg, but we'll also explicitly push later
+    build_challenge_images(challenges_dir, multithread=args.multithread, push=args.push)
     logger.info("All containers built.")
 
     if args.push:
@@ -364,6 +366,12 @@ def main():
         action=argparse.BooleanOptionalAction,
         default=True,
         help="Execute build (and push) in parallel (default: True)",
+    )
+    parser_build.add_argument(
+        "--skipcore",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Skip buliding core images: agent and gaas (default: False)",
     )
 
     # Pull subcommand
