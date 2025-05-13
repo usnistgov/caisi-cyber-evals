@@ -36,7 +36,8 @@ def get_env_variable(var_name):
     """Load environment variable and exit if not found."""
     load_dotenv()
     value = os.getenv(var_name)
-    if not value:
+    if value is None:
+        # Explicitly allowing empty string in this check
         logger.error("%s not set in environment.", var_name)
         sys.exit(1)
     return value
@@ -229,7 +230,7 @@ def build(args):
     logger.info("Processing core images with docker image base = %s", image_base)
 
     # Build core containers and push if requested.
-    build_core_containers(container_dir, image_base, args.push)
+    #build_core_containers(container_dir, image_base, args.push)
 
     # Modify compose files (create temporary files with .tmp suffix)
     compose_pattern = os.path.join(challenges_dir, "**", "compose.y*")
