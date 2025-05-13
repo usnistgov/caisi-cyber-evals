@@ -77,7 +77,7 @@ def build_core_containers(container_dir, image_base, push=True):
             run_command(["docker", "push", image_base + tag])
 
 
-def build_challenge_images(challenges_dir, multithread=True):
+def build_challenge_images(challenges_dir, multithread=True, push=True):
     """
     Find all docker compose temporary files (compose.y*ml.tmp) in the challenges
     directory and run their build (with --push) commands in parallel.
@@ -95,7 +95,9 @@ def build_challenge_images(challenges_dir, multithread=True):
 
     def build_compose(compose_file):
         logger.debug("Processing compose file: %s", compose_file)
-        cmd = ["docker", "compose", "-f", compose_file, "build", "--push"]
+        cmd = ["docker", "compose", "-f", compose_file, "build"]
+        if push:
+            cmd.append("--push")
         result = subprocess.run(cmd)
         if result.returncode != 0:
             logger.error("Build failed for %s", compose_file)
