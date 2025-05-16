@@ -1,6 +1,6 @@
 services:
   agent:
-    image: ${UCB_CONTAINER_REGISTRY}agent-environment:1.1.0
+    image: ${UCB_CONTAINER_REGISTRY}agent-environment:1.1.1
     #build:
       #context: ../../../containers/agent/
     init: true

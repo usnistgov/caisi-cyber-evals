@@ -19,7 +19,7 @@ from ucb import version
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-AGENT_NAME = "agent-environment:1.1.0"
+AGENT_NAME = "agent-environment:1.1.1"
 GHIDRA_NAME = "gaas:1.0.1"
 
 
