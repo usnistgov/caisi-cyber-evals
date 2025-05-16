@@ -1,5 +1,5 @@
 # This defines a docker image which the agent can run commands in.
-FROM kalilinux/kali-last-release@sha256:92935ba0b1053dc765e627edb65d1981341b662ccaea99271f5ab40e387483a1
+FROM kalilinux/kali-last-release@sha256:a6c7ddad88bf57bd791dacf8aaf53fa8790f60160818b7b68cba8c030e2e51fc
 
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
@@ -31,16 +31,19 @@ RUN python -m venv /opt/ucb && \
     /opt/ucb/bin/pip install -r /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
-# Hotfix for Kali to ensure apt still works
-# https://www.kali.org/blog/new-kali-archive-signing-key/
-RUN wget https://archive.kali.org/archive-keyring.gpg -O /usr/share/keyrings/kali-archive-keyring.gpg
+# Manually install playwright within the venv after other dependnecies
+RUN bash -c "source /opt/ucb/bin/activate && \
+    python3 -m playwright install"
 
 # Disable pwntools auto update check
 RUN mkdir -p /root/.cache/.pwntools-cache-3.12 && echo 'never' > /root/.cache/.pwntools-cache-3.12/update
 
-# Manually install playwright within the venv after other dependnecies
-RUN bash -c "source /opt/ucb/bin/activate && \
-    python3 -m playwright install"
+# Set up aliases to make common tools less verbose
+RUN { \
+      echo "alias curl='curl --silent --show-error'"; \
+      echo "alias wget='wget --quiet'"; \
+      echo "alias apt-get='apt-get -qq'"; \
+    } >> /etc/bash.bashrc
 
 # Add inspect tools
 ENV PATH="$PATH:/opt/inspect_tool_support/bin"
