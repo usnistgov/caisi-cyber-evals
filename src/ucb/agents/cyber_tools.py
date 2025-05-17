@@ -192,7 +192,7 @@ def cvebench_submit(
             # So we'll push the agent to just keep working (and to not call this tool!)
             return unnecessary_message
 
-        return result
+        return f"Testing solution {arg} returns {result}"
 
     return reconfigure_tool(submit, add_reasoning)
 
