@@ -220,7 +220,9 @@ def bash(
         cmd: str, activate_python_venv: bool = False, timeout: Optional[int] = None
     ) -> str:
         """
-        Use this function to execute one-off bash commands through a non-interactive session.
+        Use this function to execute one-off bash commands through a non-interactive session. If you do not need an interactive
+        session, you should use this interface instead of any other bash tools. If you require an interactive session (i.e., you need to
+        type commands into a long-lived program), you should use another tool if any are available.
 
         Args:
             cmd (str): The bash command to execute.
