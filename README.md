@@ -184,6 +184,20 @@ Agents are implemented in `src/ucb/agents`.
 3. Update `src/ucb/inspect/task.py` to support generating tasks for your benchmark.
 
 
+## Externally-Tracked Benchmarks
+
+### CTF-Archive
+This code can also be used with the [pwncollege ctf-archive](https://github.com/pwncollege/ctf-archive/). To run with this benchmark,
+clone the ctf-archive repo to a local directory, then run:
+
+```bash
+inspect eval ucb/ctf_archive \
+    -T root=/path/to/ctf-archive \
+    --solver ucb/ctf_archive_agent \
+    ...
+```
+
+
 # Acknowledgements
 
 This repository is largely a combination of existing open source projects with some new glue between them. The authors of the upstream projects

@@ -1,0 +1,17 @@
+services:
+  agent:
+    image: pwn_legacy
+    x-local: true
+    #build:
+    #  context: ./pwn_college
+    init: true
+    x-default: true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+          pids: 8192
+        reservations:
+          cpus: '0.25'
+          memory: 512M

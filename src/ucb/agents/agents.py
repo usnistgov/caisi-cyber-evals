@@ -1,10 +1,11 @@
 from shortuuid import uuid
-from typing import Optional, List, Callable
+from typing import Optional, Callable
 from inspect_ai.agent import Agent, agent as _agent, react, AgentSubmit, AgentAttempts, AgentPrompt
 from inspect_ai.tool import (
     bash_session,
     text_editor,
     think,
+    ToolDef,
 )
 
 from .cyber_tools import (
@@ -26,6 +27,7 @@ from .prompts import (
     REASONING_INSTRUCTIONS,
     THINK_DESCRIPTION,
     INCORRECT_SUBMISSION,
+    BASH_SESSION_DESC,
 )
 
 from .utils import cvebench_grader, continue_method, _is_reasoning_model
@@ -35,6 +37,8 @@ def _make_tool_list(
     timeout=600,
     use_ghidra_tool=False,
     add_reasoning=True,
+    user="root",
+    venv_path=None,
 ):
     """
     Helper to select and configure tools that will be made available to a model.
@@ -42,14 +46,21 @@ def _make_tool_list(
 
     tools = [
         think(THINK_DESCRIPTION),  # No reasoning (intended)
-        bash_session(timeout=timeout, wait_for_output=30),  # No reasoning arg (TODO)
-        text_editor(timeout=60),  #  No reasoning arg (TODO)
-        bash(max_timeout=timeout, add_reasoning=add_reasoning),
-        python(max_timeout=timeout, add_reasoning=add_reasoning),
+        text_editor(timeout=60, user=user),  #  No reasoning arg (TODO)
+        bash(max_timeout=timeout, add_reasoning=add_reasoning, user=user),
+        python(max_timeout=timeout, add_reasoning=add_reasoning, user=user, venv_path=venv_path),
         give_up(
             3, add_reasoning=add_reasoning
         ),  # After 3 calls to this tool we will terminate
     ]
+
+    # We'll add the bash session tool with a custom description to try pushing agents towards the standard
+    # bash tool when it makes sense.
+    tools.append(
+        ToolDef(bash_session(timeout=timeout, wait_for_output=30),  # No reasoning arg (TODO)
+                description=BASH_SESSION_DESC).as_tool()
+    )
+
 
     if use_ghidra_tool:
         tools.extend(
@@ -111,7 +122,9 @@ def agent(
     max_submit_tool_calls: int = 10,
     incorrect_msg: str = INCORRECT_SUBMISSION,
     timeout: int = 180,
-    early_stop_fns: Optional[List[Callable]] = None,
+    agent_user: str = "root",
+    agent_venv: Optional[str] = "/opt/ucb",
+    early_stop_fns: Optional[list[Callable]] = None,
     instance: str | None = uuid(),
 ) -> Agent:
     """
@@ -125,7 +138,9 @@ def agent(
             tool. Set to -1 for unlimited. Default 10.
         incorrect_msg (str): Message to show to agent after a failed submission.
         timeout (int): Default timeout for tool calls. Default 180.
-        early_stop_fns (Optional[List[Callable]]): List of functions to be run between turns to check
+        agent_user (str): Username agent will run commands as within its container
+        agent_venv (Optional[str]): Path to a python venv within agent container (if one is pre-configured)
+        early_stop_fns (Optional[list[Callable]]): List of functions to be run between turns to check
             if termination condition has been met.
     """
 
@@ -137,15 +152,12 @@ def agent(
 
     tools = _make_tool_list(
         timeout=timeout,
+        user=agent_user,
+        venv_path=agent_venv,
         use_ghidra_tool=use_ghidra_tool,
         add_reasoning=True,  # XXX: Should we disable for reasoning models?
     )
 
-    # We could configure this more to set an assistant message
-    # to better handle multi-agent interactions? This is default when given str
-    # prompt = AgentPrompt(sys_msg)
-
-    # Normally warn about typos and retries. For cvebench talk about the grader
     if max_submit_tool_calls == -1:
         max_submit_tool_calls = 999  # "Unlimited"
 

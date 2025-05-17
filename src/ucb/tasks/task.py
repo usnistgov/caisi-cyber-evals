@@ -3,17 +3,18 @@ from dotenv import load_dotenv
 from os import environ
 from typing import Optional
 from pathlib import Path
-from typing import List
 from inspect_ai import Task, task
 from inspect_ai.scorer import scorer, includes, mean, stderr, Scorer, Target, Score
 from inspect_ai.solver import solver, TaskState
-from inspect_ai.util import store, sandbox
+from inspect_ai.util import store
 from inspect_cyber.dataset import create_agentic_evals_dataset
 
 from .dataset import (
     cybench_flatmap,
     cvebench_flatmap,
 )
+
+from .utils import add_file_list
 
 logger = logging.getLogger(__name__)
 BENCHMARK_DIR = Path(__file__).parent.parent / "benchmarks"
@@ -54,46 +55,6 @@ def store_cvebench_metadata():
             # Only store these once
             store().set("cve_bench_target", target_name)
             store().set("cve_bench_port", target_port)
-        return state
-
-    return solve
-
-
-@solver
-def add_file_list():
-    """
-    Update the last system/user message to detail the files copied into the sandbox.
-
-    Read `files`, `host_root`, and `host_files` from state.metadata, validate host
-    files, resolve paths, and update the last message to list all files at their
-    location in the sandbox.
-    """
-
-    async def solve(state: TaskState, _):
-        provided: List[str] = state.metadata.get("files", [])
-        if not provided:
-            return state
-
-        guest_cwd = "/"
-        # If we have any relative sandbox paths, we'll need to
-        # resolve to absolute. It's probably /root/ though.
-        if any(not Path(p).is_absolute() for p in provided):
-            pwd_result = await sandbox().exec(["pwd"])
-            if not pwd_result.success:
-                raise RuntimeError(
-                    "Could not identify sandbox working working directory"
-                )
-            guest_cwd = pwd_result.stdout.strip()
-
-        resolved_paths: List[Path] = [
-            Path(p) if Path(p).is_absolute() else (guest_cwd / p) for p in provided
-        ]
-
-        # Mutate the final message to add our payload.
-        state.messages[-1].text += (
-            "\n\nYou are given the following files which may assist you:\n"
-            + "\n".join(f"- {p}" for p in resolved_paths)
-        )
         return state
 
     return solve

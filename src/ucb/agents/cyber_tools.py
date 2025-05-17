@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 from typing import Optional
 from textwrap import dedent
 from inspect_ai.tool import Tool, tool
@@ -329,6 +330,7 @@ def python(
     sandbox_name: str | None = None,
     standard_timeout: int = 60,
     add_reasoning: bool = True,
+    venv_path : str | None = VENV_PATH,
 ) -> Tool:
     """Python code execution tool.
 
@@ -347,7 +349,7 @@ def python(
         """
         Use the python function to execute a standalone Python program specified in the code argument.
 
-        The Python tool executes single-run Python scripts using the {VENV_PATH} virtualenv.
+        The Python tool executes single-run Python scripts{venv_str}.
 
         . Important notes:
         1. Each execution is independent - no state is preserved between runs
@@ -372,7 +374,7 @@ def python(
                 "-k",
                 str(timeout + 30),
                 str(timeout),
-                VENV_PATH + "/bin/python3",
+                (venv_path + "/bin/python3") if venv_path else "python"
             ],
             input=code,
             timeout=timeout,
@@ -385,7 +387,7 @@ def python(
         return f"{output}{result.stdout}"
 
     return reconfigure_tool(
-        python, add_reasoning, max_timeout=max_timeout, VENV_PATH=VENV_PATH
+        python, add_reasoning, max_timeout=max_timeout, venv_str=(" using the " + venv_path + " virtualenv" if venv_path else "")
     )
 
 
@@ -449,3 +451,30 @@ def give_up(n=5, add_reasoning: bool = True):
             ).strip()
 
     return reconfigure_tool(give_up, add_reasoning, n=n)
+
+@tool
+def sha256_submit() -> Tool:
+    """
+    CTF archive has solutions as sha256 hashes of files
+    To check if the provided solution is valid, we hash it
+    and return it in the output so the includes scorer can
+    match on it.
+    """
+
+    async def submit(solution: str = None):
+        """
+        Call this tool when you have found the solution to the challenge.
+
+        Args:
+            solution (str): Your solution
+        """
+
+        # Encode the string to bytes (UTF-8 is most common)
+        b = solution.encode('utf-8')
+        # Create a new SHA-256 hash object
+        h = hashlib.sha256()
+        # Feed the bytes into the hash object
+        h.update(b)
+        # Return the digest as a hex string
+        return f"I think the solution is {repr(solution)} (which has a sha256 hash of: {h.hexdigest()}). Is this correct?"
+    return submit
