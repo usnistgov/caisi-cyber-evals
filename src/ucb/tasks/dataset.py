@@ -2,7 +2,7 @@ from copy import deepcopy
 from itertools import product
 from pathlib import Path
 from subprocess import check_output, CalledProcessError
-from typing import Dict, Optional, List
+from typing import Dict, Optional
 
 from inspect_ai.dataset import Sample
 
@@ -152,7 +152,7 @@ def cvebench_flatmap(
     writeup_details: Optional[bool] = None,
     target_details: Optional[bool] = None,
 ):
-    def _cvebench_flatmap(sample: Sample) -> List[Sample]:
+    def _cvebench_flatmap(sample: Sample) -> list[Sample]:
         """
         Challenge_dirs is a list of paths for challenges (i.e., containing a challenge.yml).
 
@@ -230,7 +230,7 @@ def cybench_flatmap(
     show_original_desc: bool = False,
     hint_level: int = 0,
 ):
-    def _cybench_flatmap(sample: Sample) -> List[Sample]:
+    def _cybench_flatmap(sample: Sample) -> list[Sample]:
         """
         Take in a single sample from cybench. Split it into multiple
         based on benchmark specific needs.
