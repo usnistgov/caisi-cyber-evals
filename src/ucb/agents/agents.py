@@ -44,7 +44,7 @@ def _make_tool_list(
         think(THINK_DESCRIPTION),  # No reasoning (intended)
         bash_session(timeout=timeout, wait_for_output=30),  # No reasoning arg (TODO)
         text_editor(timeout=60),  #  No reasoning arg (TODO)
-        #bash(max_timeout=timeout, add_reasoning=add_reasoning),
+        bash(max_timeout=timeout, add_reasoning=add_reasoning),
         python(max_timeout=timeout, add_reasoning=add_reasoning),
         give_up(
             3, add_reasoning=add_reasoning
