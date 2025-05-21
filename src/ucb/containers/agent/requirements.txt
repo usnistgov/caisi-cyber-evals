@@ -20,7 +20,7 @@ aiohappyeyeballs
 aiohttp
 aioquic
 aiosignal
-angr
+angr==9.2.154
 archinfo
 asgiref
 attrs
