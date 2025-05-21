@@ -206,6 +206,12 @@ def _is_reasoning_model() -> bool:
     Is the current model a reasoning/thinking model?
     """
     model = get_model()
+    if model.name == "none":
+        logger.warning(
+            f"Could not determine reasoning level of model {model}. Assuming non-reasoning."
+        )
+        return False
+
     if isinstance(model.api, OpenAIAPI):
         # All OpenAI o-series models think, no other reasoning models do.
         return model.api.is_o_series()
