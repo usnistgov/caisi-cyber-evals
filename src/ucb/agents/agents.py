@@ -133,7 +133,7 @@ def agent(
     reasoning_model = _is_reasoning_model()
 
     if not reasoning_model:
-        sys_msg += "\n" + REASONING_INSTRUCTIONS
+        sys_msg += "\n\n" + REASONING_INSTRUCTIONS
 
     tools = _make_tool_list(
         timeout=timeout,
