@@ -213,8 +213,10 @@ def _is_reasoning_model() -> bool:
     # We cannot do a similar check for Anthropic because 3.7 Sonnet can either
     # use thinking or not depending on the arguments passed to it.
 
-
-    if model.config.reasoning_effort is not None or model.config.reasoning_tokens is not None:
+    if (
+        model.config.reasoning_effort is not None
+        or model.config.reasoning_tokens is not None
+    ):
         logger.warning(
             "Model config has reasoning_effort or reasoning_tokens set. Assuming reasoning model."
         )
