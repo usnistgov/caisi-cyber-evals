@@ -2,6 +2,7 @@ import asyncio
 import functools
 import inspect
 import json
+import logging
 
 from .prompts import TOOL_REASONING, DEFAULT_NO_TOOLS_MSG
 from inspect_ai.agent import AgentState
@@ -10,6 +11,8 @@ from inspect_ai.model import get_model
 from inspect_ai.util import sandbox, store
 
 from inspect_ai.scorer import Score
+
+logger = logging.getLogger(__name__)
 
 
 def reconfigure_tool(method, add_reasoning=True, **kwargs):
@@ -198,16 +201,26 @@ from inspect_ai.model._providers.openai import OpenAIAPI
 from inspect_ai.model._providers.anthropic import AnthropicAPI
 
 
-def _is_reasoning_model():
+def _is_reasoning_model() -> bool:
     """
     Is the current model a reasoning/thinking model?
     """
     model = get_model()
     if isinstance(model.api, OpenAIAPI):
+        # All OpenAI o-series models think, no other reasoning models do.
         return model.api.is_o_series()
-    elif isinstance(model.api, AnthropicAPI):
-        return model.api.is_thinking_model()
-    else:
-        raise NotImplementedError(
-            f"Need logic to detect reasoning models from provider for {model.name}"
+
+    # We cannot do a similar check for Anthropic because 3.7 Sonnet can either
+    # use thinking or not depending on the arguments passed to it.
+
+
+    if model.config.reasoning_effort is not None or model.config.reasoning_tokens is not None:
+        logger.warning(
+            "Model config has reasoning_effort or reasoning_tokens set. Assuming reasoning model."
         )
+        return True
+
+    logger.warning(
+        "Model config does not have reasoning_effort or reasoning_tokens set. Assuming non-reasoning model."
+    )
+    return False
