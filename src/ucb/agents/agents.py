@@ -1,6 +1,6 @@
 from shortuuid import uuid
 from typing import Optional, List, Callable
-from inspect_ai.agent import Agent, agent, react, AgentSubmit, AgentAttempts, AgentPrompt
+from inspect_ai.agent import Agent, agent as _agent, react, AgentSubmit, AgentAttempts, AgentPrompt
 from inspect_ai.tool import (
     bash_session,
     text_editor,
@@ -64,7 +64,7 @@ def _make_tool_list(
     return tools
 
 
-@agent
+@_agent
 def cybench_agent(sys_msg: str = CYBENCH_SYSTEM_MESSAGE, **kwargs) -> Agent:
     """
     Cybench default solver.
@@ -75,7 +75,7 @@ def cybench_agent(sys_msg: str = CYBENCH_SYSTEM_MESSAGE, **kwargs) -> Agent:
     return agent(sys_msg=sys_msg, **kwargs)
 
 
-@agent
+@_agent
 def cvebench_agent(
     sys_msg: str = CYBER_SYSTEM_MESSAGE,
     reminder_msg: str = None,
@@ -102,7 +102,7 @@ def cvebench_agent(
     )
 
 
-@agent
+@_agent
 def agent(
     sys_msg: str = CYBER_SYSTEM_MESSAGE,
     reminder_msg: Optional[str] = None,
