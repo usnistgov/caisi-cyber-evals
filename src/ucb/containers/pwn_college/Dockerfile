@@ -1,6 +1,18 @@
-# Build base from https://github.com/pwncollege/challenge-images/tree/main/legacy
+# First Build dependencies with:
+#  docker build -t pwn_legacy_base https://github.com/pwncollege/challenge-images.git#main:legacy/
+#  docker build -t pwn_workspace https://github.com/pwncollege/dojo.git#master:workspace/
+#
 # Ensure umask is 0022 when cloning and building or permissions will be fatally flawed!
-FROM pwn_legacy_base
+
+FROM pwn_workspace AS workspace_builder
+# First layer just builds nix packages from the dojo workspace
+ENV DOJO_WORKSPACE=full
+RUN /docker-entrypoint.sh
+
+
+FROM pwn_legacy_base AS final
+# Second layer extends participant container by adding
+# inspect tools and copying in nix packages from workspace_builder
 
 # Sanity check, do we have expected suid bits? Does other user have +rx? If not exit
 RUN ls -l /opt/pwn.college/sh | grep -q 'rwsr-xr-x'
@@ -32,6 +44,6 @@ ENV PATH="$PATH:/opt/inspect_tool_support/bin"
 RUN /opt/inspect_tool_support/bin/pip install 'git+https://github.com/UKGovernmentBEIS/inspect_ai#egg=inspect_tool_support&subdirectory=src/inspect_tool_support' && \
     /opt/inspect_tool_support/bin/inspect-tool-support post-install --no-web-browser
 
-COPY --from=workspace2 /nix /nix
+COPY --from=workspace_builder /nix /nix
 
 CMD ["sleep", "infinity"]

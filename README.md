@@ -188,7 +188,7 @@ Agents are implemented in `src/ucb/agents`.
 
 ### CTF-Archive
 This code can also be used with the [pwncollege ctf-archive](https://github.com/pwncollege/ctf-archive/). To run with this benchmark,
-clone the ctf-archive repo to a local directory, then run:
+follow the setup instructions in [docs/ctf_archive](docs/ctf_archive.md), then then run:
 
 ```bash
 inspect eval ucb/ctf_archive \
