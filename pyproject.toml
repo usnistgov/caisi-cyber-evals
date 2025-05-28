@@ -35,7 +35,7 @@ dependencies = [
     "idna>=3.10",
     "ijson>=3.3.0",
     "inspect-ai>=0.3.93",
-    "inspect-cyber",
+    "inspect-cyber @ git+https://github.com/UKGovernmentBEIS/inspect_cyber.git",
     "jiter>=0.8.2",
     "jmespath>=1.0.1",
     "jsonlines>=4.0.0",
@@ -122,6 +122,3 @@ replace = "version='{new_version}'"
 filename = "pyproject.toml"
 search = "version = \"{current_version}\""
 replace = "version = \"{new_version}\""
-
-[tool.uv.sources]
-inspect-cyber = { git = "https://github.com/UKGovernmentBEIS/inspect_cyber.git" }
