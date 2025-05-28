@@ -94,7 +94,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["ucb", "ucb.inspect", "ucb.containers.agent"]
+include = ["ucb*"]
 
 [tool.setuptools.package-data]
 "ucb" = [
@@ -102,8 +102,7 @@ include = ["ucb", "ucb.inspect", "ucb.containers.agent"]
     "containers/*.yml",
     "containers/agent/**",
     "containers/gaas/**",
-    "challenges/**/.env", # Used for cve-bench
-    "challenges/**/",
+    "benchmarks/**",
 ]
 
 
