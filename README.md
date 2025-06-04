@@ -1,16 +1,17 @@
-# AISI Cyber Evaluations
+# CAISI Cyber Evaluations
 
-This repository packages a few benchmarks and agents used by the [US AI Safety Institute](https://www.nist.gov/aisi)
-for cyber capability evaluations of AI systems. It aims to provide a standard, user-friendly interface to running
-agentic cyber benchmarks with the [Inspect evaluation framework](https://github.com/UKGovernmentBEIS/inspect_ai/).
+This repository packages a few benchmarks and agents used by the [Center for AI Standards and Innovation (CAISI)
+](https://www.nist.gov/caisi) for cyber capability evaluations of AI systems. It aims to provide a standard,
+user-friendly interface to running agentic cyber benchmarks with the
+[Inspect evaluation framework](https://github.com/UKGovernmentBEIS/inspect_ai/).
 
-The package currently includes 2 agents and 2 benchmarks.
+The package currently includes 2 agents and 3 benchmarks.
 
 ## Integrated Benchmarks
 
 ### CVE-Bench
 * Based on [CVE-Bench created by Yuxuan Zhu et al.](https://arxiv.org/pdf/2503.17332).
-* AISI's modifications are largely around the Inspect integration and automated evaluation.
+* CAISI's modifications are largely around the Inspect integration and automated evaluation.
 * This version of the benchmark has 7 tasks plus a dev tasks.
 * The [upstream repository](https://github.com/uiuc-kang-lab/cve-bench) has 40 tasks.
 
@@ -18,9 +19,16 @@ The package currently includes 2 agents and 2 benchmarks.
 * This code is based off the public cybench fork maintained by the UK AI Security Institute
 [here](https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench), originally
 developed by Andy Zhang et al. [paper](https://arxiv.org/abs/2408.08926).
-* AISI added original task descriptions, and updated system/task level prompts.
-* AISI updated the benchmark to support running all samples within a single eval
+* CAISI added original task descriptions, and updated system/task level prompts.
+* CAISI updated the benchmark to support running all samples within a single eval
 (i.e., produce one .eval file instead of 40).
+
+### Pwn.College Dojos
+* After locally cloning a pwn.college dojo of tasks, this code can convert the tasks into
+Inspect-AI tasks.
+* The [ctf-archive dojo](https://github.com/pwncollege/ctf-archive/) provides 615 tasks.
+* CASI developed the integration between pwn.college and Inspect to enable this. Note this repository only
+contains the integration, the pwn.college tasks live in their respective repos.
 
 # Quickstart
 
@@ -41,7 +49,7 @@ uv sync
 
 You should now create a `.env` file and add the relevant API keys to it.
 It is highly recommend to use a container registry via `UCB_CONTAINER_REGISTRY` which can
-point at a domain and a directory prefix, e.g., "gitlab.com/aisi/cyber/ucb/". This should
+point at a domain and a directory prefix, e.g., "gitlab.com/caisi/cyber/ucb/". This should
 end with a trailing slash.
 
 ```bash
@@ -236,3 +244,15 @@ Thanks to Yuxuan Zhu and Antony Kellermann and Dylan Bowman and Philip Li and Ak
     url={https://arxiv.org/abs/2503.17332}
 }
 ```
+
+## Shoshitaishvili et al.
+[pwn.college](https://pwn.college) creators. [Paper](https://dl.acm.org/doi/abs/10.1145/3626252.3630912) and [CTF-Archive](https://github.com/pwncollege/ctf-archive) maintainers.
+
+```
+@inproceedings{nelson2024pwn,
+  title={PWN The Learning Curve: Education-First CTF Challenges},
+  author={Nelson, Connor and Shoshitaishvili, Yan},
+  booktitle={Proceedings of the 55th ACM Technical Symposium on Computer Science Education V. 1},
+  pages={937--943},
+  year={2024}
+}
