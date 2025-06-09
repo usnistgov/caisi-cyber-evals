@@ -1,6 +1,6 @@
 from inspect_ai.agent import Agent, agent, AgentSubmit
 from .agents import agent as ucb_agent
-from .cyber_tools import sha256_submit
+from .cyber_tools import flag_check_tool
 from .prompts import CTF_ARCHIVE_SYSTEM_MESSAGE
 
 
@@ -32,6 +32,6 @@ def ctf_archive_agent(
         use_ghidra_tool=use_ghidra_tool,
         agent_user="hacker",
         agent_venv=None,
-        submit=AgentSubmit(tool=sha256_submit(), name="submit"),
+        extra_tools=[flag_check_tool()],
         **kwargs,
     )

@@ -77,11 +77,13 @@ def ctf_archive(
 
         flag_check_message = (
             CTF_ARCHIVE_FLAG_CHECK_PROMPT
-            if any(["flagCheck" in str(x) for x in files.keys()])
-            else ""
+            if any(["flagCheck " in str(x) for x in files.keys()])
+            else
+            ""
         )
         prompt = CTF_ARCHIVE_USER_PROMPT.format(
-            instruction=task_description, flag_check_message=flag_check_message
+            instruction=task_description,
+            flag_check_message=flag_check_message
         )
 
         sample = Sample(
