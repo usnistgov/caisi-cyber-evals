@@ -125,6 +125,7 @@ def agent(
     agent_user: str = "root",
     agent_venv: Optional[str] = "/opt/ucb",
     early_stop_fns: Optional[list[Callable]] = None,
+    extra_tools: Optional[list[Callable]] = None,
     instance: str | None = uuid(),
 ) -> Agent:
     """
@@ -157,6 +158,8 @@ def agent(
         use_ghidra_tool=use_ghidra_tool,
         add_reasoning=True,  # XXX: Should we disable for reasoning models?
     )
+
+    tools.extend(extra_tools or [])
 
     if max_submit_tool_calls == -1:
         max_submit_tool_calls = 999  # "Unlimited"
