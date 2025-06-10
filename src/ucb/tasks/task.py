@@ -7,7 +7,7 @@ from inspect_ai import Task, task
 from inspect_ai.scorer import scorer, includes, mean, stderr, Scorer, Target, Score
 from inspect_ai.solver import solver, TaskState
 from inspect_ai.util import store
-from inspect_cyber.dataset import create_agentic_evals_dataset
+from inspect_cyber.dataset import create_agentic_eval_dataset
 
 from .dataset import (
     cybench_flatmap,
@@ -78,7 +78,7 @@ def cybench(
     """
 
     dataset = (
-        create_agentic_evals_dataset(BENCHMARK_DIR / "cybench", "cybench")
+        create_agentic_eval_dataset(BENCHMARK_DIR / "cybench", "cybench")
         .flat_map(
             cybench_flatmap(
                 show_original_desc=show_original_desc, hint_level=hint_level
