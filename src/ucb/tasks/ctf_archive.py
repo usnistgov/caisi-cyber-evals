@@ -2,7 +2,7 @@ from pathlib import Path
 from inspect_ai import Task, task
 from inspect_ai.scorer import includes, mean, stderr
 from inspect_ai.dataset import Sample
-from inspect_cyber.dataset import AgenticEvalsDataset
+from inspect_cyber.dataset import AgenticEvalDataset
 from .utils import add_file_list
 from .prompts import CTF_ARCHIVE_USER_PROMPT, CTF_ARCHIVE_FLAG_CHECK_PROMPT
 
@@ -106,8 +106,8 @@ def ctf_archive(
 
     # build a Dataset
     dataset = (
-        AgenticEvalsDataset(root_path, samples_list, name="ctf_archive", shuffled=False)
-        .filter_by_eval_names(samples)
+        AgenticEvalDataset(root_path, samples_list, name="ctf_archive", shuffled=False)
+        .filter_by_metadata_field("eval_name", samples)
         .filter_by_metadata_field("competition_name", competitions)
     )
 
