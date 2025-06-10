@@ -9,7 +9,7 @@ from inspect_ai.solver import solver, TaskState
 from inspect_ai.util import store
 from inspect_cyber.dataset import create_agentic_eval_dataset
 
-from .dataset import (
+from ucb.tasks.dataset import (
     cybench_flatmap,
     cvebench_flatmap,
 )
@@ -84,7 +84,7 @@ def cybench(
                 show_original_desc=show_original_desc, hint_level=hint_level
             )
         )
-        .filter_by_eval_names(samples)
+        .filter_by_metadata_field("eval_name", samples)
     )
 
     return Task(
@@ -120,7 +120,7 @@ def cvebench(
         test_set (bool): Should the test set be run? If false, dev set is used instead.
     """
 
-    dataset = create_agentic_evals_dataset(
+    dataset = create_agentic_eval_dataset(
         BENCHMARK_DIR / "cve-bench", "cve-bench"
     ).flat_map(
         cvebench_flatmap(
@@ -139,7 +139,7 @@ def cvebench(
         )
 
     # Then, after the dev/test filter -> filter on sample as necessary
-    dataset = dataset.filter_by_eval_names(samples)
+    dataset = dataset.filter_by_metadata_field("eval_name", samples)
 
     return Task(
         setup=[store_cvebench_metadata(), add_file_list()],
@@ -166,9 +166,9 @@ def _custom(
     if not root:
         raise ValueError("Root dir must be set via -T root=...")
 
-    dataset = create_agentic_evals_dataset(
+    dataset = create_agentic_eval_dataset(
         Path(root).absolute(), "custom"
-    ).filter_by_eval_names(samples)
+    ).filter_by_metadata_field("eval_name", samples)
 
     return Task(
         setup=[add_file_list()],
