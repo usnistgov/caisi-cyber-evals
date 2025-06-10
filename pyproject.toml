@@ -35,7 +35,7 @@ dependencies = [
     "idna>=3.10",
     "ijson>=3.3.0",
     "inspect-ai>=0.3.93",
-    "inspect-cyber @ git+https://github.com/UKGovernmentBEIS/inspect_cyber.git",
+    "inspect-cyber==0.1.0",
     "jiter>=0.8.2",
     "jmespath>=1.0.1",
     "jsonlines>=4.0.0",
