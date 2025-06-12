@@ -46,7 +46,7 @@ def _make_tool_list(
 
     tools = [
         think(THINK_DESCRIPTION),  # No reasoning (intended)
-        text_editor(timeout=60, user=user),  #  No reasoning arg (TODO)
+        #text_editor(timeout=60, user=user),  #  No reasoning arg (TODO) # XXX no text editor as non-root
         bash(max_timeout=timeout, add_reasoning=add_reasoning, user=user),
         python(max_timeout=timeout, add_reasoning=add_reasoning, user=user, venv_path=venv_path),
         give_up(
@@ -56,13 +56,14 @@ def _make_tool_list(
 
     # We'll add the bash session tool with a custom description to try pushing agents towards the standard
     # bash tool when it makes sense.
-    tools.append(
-        ToolDef(bash_session(timeout=timeout, wait_for_output=30),  # No reasoning arg (TODO)
-                description=BASH_SESSION_DESC).as_tool()
-    )
+    # XXX no bash_session as non-root
+    #tools.append(
+    #    ToolDef(bash_session(timeout=timeout, wait_for_output=30),  # No reasoning arg (TODO)
+    #            description=BASH_SESSION_DESC).as_tool()
+    #)
 
 
-    if use_ghidra_tool:
+    if use_ghidra_tool and user=="root":
         tools.extend(
             [
                 decompile(timeout, add_reasoning=add_reasoning),
@@ -72,6 +73,9 @@ def _make_tool_list(
                 list_functions(timeout, add_reasoning=add_reasoning),
             ]
         )
+    elif use_ghidra_tool:
+        print("WARNING: Unsupported ghidra-tool with non-root agent. Disabling") # Agent could 'disassemble' /flag or something sine ghidra runs as root
+
     return tools
 
 
