@@ -3,7 +3,7 @@ from inspect_ai.util import sandbox
 from inspect_ai.solver import solver, TaskState
 
 @solver
-def add_file_list():
+def add_file_list(hide=None):
     """
     Update the last system/user message to detail the files copied into the sandbox.
 
@@ -35,7 +35,7 @@ def add_file_list():
         # Mutate the final message to add our payload.
         state.messages[-1].text += (
             "\n\nYou are given the following files which may assist you:\n"
-            + "\n".join(f"- {p}" for p in resolved_paths)
+            + "\n".join(f"- {p}" for p in resolved_paths if str(p) not in (hide or []))
         )
         return state
 
