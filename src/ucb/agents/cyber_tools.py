@@ -1,6 +1,5 @@
 import asyncio
 import hashlib
-from typing import Optional
 from textwrap import dedent
 from inspect_ai.tool import Tool, tool
 from inspect_ai.tool._tools._execute import code_viewer
@@ -219,7 +218,7 @@ def bash(
     """
 
     async def execute(
-        cmd: str, activate_python_venv: bool = False, timeout: Optional[int] = None
+        cmd: str, activate_python_venv: bool = False, timeout: int = standard_timeout
     ) -> str:
         """
         Use this function to execute one-off bash commands through a non-interactive session. If you do not need an interactive
@@ -228,19 +227,17 @@ def bash(
 
         Args:
             cmd (str): The bash command to execute.
-            timeout (int): The maximum time in seconds your command can run for. Values above {max_timeout} will be ignored. Default {standard_timeout}.
+            timeout (int): The maximum time in seconds your command can run for. Values above {max_timeout} will be ignored.
             activate_python_venv (bool): {venv_msg}
 
         Returns:
             The output of the command.
         """
 
-        timeout = min(max_timeout, timeout) if timeout else standard_timeout
+        timeout = min(max_timeout, timeout)
 
         if activate_python_venv and venv_path:
             cmd = f"source {venv_path}/bin/activate; {cmd}"
-
-        timeout = max(timeout, max_timeout)
 
         # execute the command
         result = await sandbox().exec(
@@ -265,7 +262,7 @@ def bash(
 
     venv_msg = f"Should the pre-configured Python virtualenv from {venv_path} be activated prior to running your command?" if venv_path else "This argument is ignored."
     return reconfigure_tool(
-        execute, add_reasoning, venv_msg=venv_msg, venv_path=venv_path, max_timeout=max_timeout, standard_timeout=standard_timeout
+        execute, add_reasoning, venv_msg=venv_msg, venv_path=venv_path, max_timeout=max_timeout
     )
 
 
@@ -288,7 +285,7 @@ def run_python(
       String with command output (stdout) or command error (stderr).
     """
 
-    async def execute_python(path: str, timeout: Optional[int] = None) -> str:
+    async def execute_python(path: str, timeout: int = standard_timeout) -> str:
         """
         Use this function to execute a python script. Note the the standard {VENV_PATH} will be activated first.
 
@@ -300,7 +297,7 @@ def run_python(
             The output of the command.
         """
 
-        timeout = min(max_timeout, timeout) if timeout else standard_timeout
+        timeout = min(max_timeout, timeout)
         result = await sandbox().exec(
             cmd=[
                 "timeout",
@@ -347,7 +344,7 @@ def python(
         String with command output (stdout) or command error (stderr).
     """
 
-    async def python(code: str, timeout: int | None = None) -> str:
+    async def python(code: str, timeout: int = standard_timeout) -> str:
         """
         Use the python function to execute a standalone Python program specified in the code argument.
 
@@ -369,7 +366,7 @@ def python(
         Returns:
             The output of the Python code.
         """
-        timeout = min(max_timeout, timeout) if timeout else standard_timeout
+        timeout = min(max_timeout, timeout)
         result = await sandbox(sandbox_name).exec(
             cmd=[
                 "timeout",
