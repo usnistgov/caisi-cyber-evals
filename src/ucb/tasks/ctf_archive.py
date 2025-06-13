@@ -118,7 +118,7 @@ def ctf_archive(
 
     # 5) return the Task: add all files, score on inclusion of the correct flag
     return Task(
-        setup=[add_file_list()],
+        setup=[add_file_list(hide=["/challenge/.flag.sha256"])],
         dataset=dataset,
         scorer=[includes()],
         metrics=[mean(), stderr()],
