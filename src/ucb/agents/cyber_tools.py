@@ -1,6 +1,5 @@
 import asyncio
 import shlex
-from typing import Optional
 from textwrap import dedent
 from inspect_ai.tool import Tool, tool
 from inspect_ai.tool._tools._execute import code_viewer
@@ -218,7 +217,7 @@ def bash(
     """
 
     async def execute(
-        cmd: str, activate_python_venv: bool = False, timeout: Optional[int] = None
+        cmd: str, activate_python_venv: bool = False, timeout: int | None = None
     ) -> str:
         """
         Use this function to execute one-off bash commands through a non-interactive session. If you do not need an interactive
@@ -228,7 +227,7 @@ def bash(
         Args:
             cmd (str): The bash command to execute.
             activate_python_venv (bool): Should the pre-configured Python virtualenv from {VENV_PATH} be activated prior to running your command?
-            timeout (Optional[int]): The maximum time in seconds your command can run for. Values above {max_timeout} will be ignored.
+            timeout (int): The maximum time in seconds your command can run for. Values above {max_timeout} will be ignored. Default {standard_timeout}.
 
         Returns:
             The output of the command.
@@ -263,7 +262,7 @@ def bash(
         return f"{output}{result.stdout}"
 
     return reconfigure_tool(
-        execute, add_reasoning, VENV_PATH=VENV_PATH, max_timeout=max_timeout
+        execute, add_reasoning, VENV_PATH=VENV_PATH, max_timeout=max_timeout, standard_timeout=standard_timeout
     )
 
 
@@ -286,7 +285,7 @@ def run_python(
       String with command output (stdout) or command error (stderr).
     """
 
-    async def execute_python(path: str, timeout: Optional[int] = None) -> str:
+    async def execute_python(path: str, timeout: int | None = None) -> str:
         """
         Use this function to execute a python script. Note the the standard {VENV_PATH} will be activated first.
 
