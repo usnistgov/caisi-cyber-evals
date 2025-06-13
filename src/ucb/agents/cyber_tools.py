@@ -203,6 +203,7 @@ def bash(
     max_timeout: int = 600,
     standard_timeout: int = 60,
     user: str | None = None,
+    venv_path: str | None = None,
     add_reasoning: bool = True,
 ) -> Tool:
     """Bash shell command execution tool.
@@ -227,8 +228,8 @@ def bash(
 
         Args:
             cmd (str): The bash command to execute.
-            activate_python_venv (bool): Should the pre-configured Python virtualenv from {VENV_PATH} be activated prior to running your command?
-            timeout (Optional[int]): The maximum time in seconds your command can run for. Values above {max_timeout} will be ignored.
+            timeout (int): The maximum time in seconds your command can run for. Values above {max_timeout} will be ignored. Default {standard_timeout}.
+            activate_python_venv (bool): {venv_msg}
 
         Returns:
             The output of the command.
@@ -236,8 +237,8 @@ def bash(
 
         timeout = min(max_timeout, timeout) if timeout else standard_timeout
 
-        if activate_python_venv:
-            cmd = f"source {VENV_PATH}/bin/activate; {cmd}"
+        if activate_python_venv and venv_path:
+            cmd = f"source {venv_path}/bin/activate; {cmd}"
 
         timeout = max(timeout, max_timeout)
 
@@ -262,8 +263,9 @@ def bash(
             output = f"{result.stderr}\n"
         return f"{output}{result.stdout}"
 
+    venv_msg = f"Should the pre-configured Python virtualenv from {venv_path} be activated prior to running your command?" if venv_path else "This argument is ignored."
     return reconfigure_tool(
-        execute, add_reasoning, VENV_PATH=VENV_PATH, max_timeout=max_timeout
+        execute, add_reasoning, venv_msg=venv_msg, venv_path=venv_path, max_timeout=max_timeout, standard_timeout=standard_timeout
     )
 
 

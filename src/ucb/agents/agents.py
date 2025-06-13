@@ -47,7 +47,7 @@ def _make_tool_list(
     tools = [
         think(THINK_DESCRIPTION),  # No reasoning (intended)
         text_editor(timeout=60, user=user),  #  No reasoning arg (TODO)
-        bash(max_timeout=timeout, add_reasoning=add_reasoning, user=user),
+        bash(max_timeout=timeout, add_reasoning=add_reasoning, user=user, venv_path=venv_path),
         python(max_timeout=timeout, add_reasoning=add_reasoning, user=user, venv_path=venv_path),
         give_up(
             3, add_reasoning=add_reasoning
