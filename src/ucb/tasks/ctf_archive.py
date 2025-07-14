@@ -3,8 +3,8 @@ from inspect_ai import Task, task
 from inspect_ai.scorer import includes, mean, stderr
 from inspect_ai.dataset import Sample
 from inspect_cyber.dataset import AgenticEvalDataset
-from .utils import add_file_list
-from .prompts import CTF_ARCHIVE_USER_PROMPT, CTF_ARCHIVE_FLAG_CHECK_PROMPT
+from ucb.tasks.utils import add_file_list
+from ucb.tasks.prompts import CTF_ARCHIVE_USER_PROMPT, CTF_ARCHIVE_FLAG_CHECK_PROMPT
 
 PWN_YML = Path(__file__).parent.parent / "containers" / "pwn_college.yml"
 
