@@ -27,7 +27,7 @@ developed by Andy Zhang et al. [paper](https://arxiv.org/abs/2408.08926).
 * After locally cloning a pwn.college dojo of tasks, this code can convert the tasks into
 Inspect-AI tasks.
 * The [ctf-archive dojo](https://github.com/pwncollege/ctf-archive/) provides 615 tasks.
-* CASI developed the integration between pwn.college and Inspect to enable this. Note this repository only
+* CAISI developed the integration between pwn.college and Inspect to enable this. Note this repository only
 contains the integration, the pwn.college tasks live in their respective repos.
 
 # Quickstart
