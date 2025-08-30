@@ -36,6 +36,7 @@ dependencies = [
     "ijson>=3.3.0",
     "inspect-ai>=0.3.93",
     "inspect-cyber==0.1.0",
+    "inspect-k8s-sandbox @ git+https://github.com/UKGovernmentBEIS/inspect_k8s_sandbox.git",
     "jiter>=0.8.2",
     "jmespath>=1.0.1",
     "jsonlines>=4.0.0",
