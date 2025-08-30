@@ -21,10 +21,9 @@ COMPOSE_FILES_DIR = Path(user_cache_dir("inspect_ctf_archive_eval")) / "compose_
 LOCAL_IMAGE_NAME = "pwn_legacy"
 RM_REHOST_CMD = "rm /challenge/REHOST.md"
 
-type SandboxType = Literal["docker", "k8s"]
-
 
 def get_compose_file(image_reference: str) -> str:
+    # Create compose file on the fly to allow for user-defined image-reference when using k8s.
     COMPOSE_FILES_DIR.mkdir(parents=True, exist_ok=True)
     compose_file_path = COMPOSE_FILES_DIR / "docker-compose.yml"
     content = f"""
@@ -59,7 +58,7 @@ def ctf_archive(
     samples: str | list[str] | None = None,
     competitions: str | list[str] | None = None,
     shuffle: bool = False,
-    sandbox_type: SandboxType = "docker",
+    sandbox_type: Literal["docker", "k8s"] = "docker",
     k8s_image_url: str | None = None,
 ) -> Task:
     """
