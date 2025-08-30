@@ -1,8 +1,10 @@
 from pathlib import Path
+from typing import Literal
 from inspect_ai import Task, task
 from inspect_ai.scorer import includes, mean, stderr
 from inspect_ai.dataset import Sample
 from inspect_cyber.dataset import AgenticEvalDataset
+from platformdirs import user_cache_dir
 from ucb.tasks.utils import add_file_list
 from ucb.tasks.prompts import CTF_ARCHIVE_USER_PROMPT, CTF_ARCHIVE_FLAG_CHECK_PROMPT
 
@@ -15,6 +17,41 @@ SETUP = "chmod -R 4755 /challenge; echo '{flag}' > /flag; echo 'export PATH=/nix
 
 # TODO: normal setup infra is at https://github.com/pwncollege/dojo/blob/master/workspace/core/init.nix
 
+COMPOSE_FILES_DIR = Path(user_cache_dir("inspect_ctf_archive_eval")) / "compose_files"
+LOCAL_IMAGE_NAME = "pwn_legacy"
+RM_REHOST_CMD = "rm /challenge/REHOST.md"
+
+type SandboxType = Literal["docker", "k8s"]
+
+
+def get_compose_file(image_reference: str) -> str:
+    COMPOSE_FILES_DIR.mkdir(parents=True, exist_ok=True)
+    compose_file_path = COMPOSE_FILES_DIR / "docker-compose.yml"
+    content = f"""
+services:
+  agent:
+    image: {image_reference}
+    x-local: true
+    init: true
+    # XXX: This was included in the original compose file, but inspect-k8s can't automatically convert it. There is an option for converting it manually, but it takes more effort. Wondering if it's worth it.
+    # x-default: true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+          # XXX: This was included in the original compose file, but inspect-k8s can't automatically convert it. There is an option for converting it manually, but it takes more effort. Wondering if it's worth it.
+          # pids: 8192
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+"""
+
+    with open(compose_file_path, "w") as f:
+        f.write(content)
+
+    return str(compose_file_path)
+
 
 @task
 def ctf_archive(
@@ -22,6 +59,8 @@ def ctf_archive(
     samples: str | list[str] | None = None,
     competitions: str | list[str] | None = None,
     shuffle: bool = False,
+    sandbox_type: SandboxType = "docker",
+    k8s_image_url: str | None = None,
 ) -> Task:
     """
     Create samples based on a local "pwncollege/ctf-archive" folder
@@ -33,7 +72,6 @@ def ctf_archive(
         competitions (str | list[str] | None): A list of competitions to select samples from.
         samples (bool): Shuffle the dataset (default False)
     """
-
     root_path = Path(root).expanduser().resolve() if root else None
     if not root_path or not root_path.exists() or not root_path.is_dir():
         raise ValueError(
@@ -70,8 +108,14 @@ def ctf_archive(
             if f.name == ".init":
                 # Specifies setup commands for the challenges - these run as root in the container
                 extra_setup = open(f).read()
+                if RM_REHOST_CMD in extra_setup:
+                    # Remove this command from setup. It will cause an error because
+                    # the REHOST.md file is already filtered from in the container.
+                    lines = extra_setup.splitlines()
+                    extra_setup = "\n".join(
+                        line for line in lines if line != RM_REHOST_CMD
+                    )
                 continue
-
             sandbox_path = str(Path("/challenge") / f.relative_to(challenge_dir))
             files[sandbox_path] = str(f.resolve())
 
@@ -84,12 +128,27 @@ def ctf_archive(
             instruction=task_description, flag_check_message=flag_check_message
         )
 
+        assert sandbox_type in {"docker", "k8s"}, (
+            f"Unsupported sandbox type: {sandbox_type}"
+        )
+        if sandbox_type == "k8s":
+            assert k8s_image_url is not None, (
+                "k8s_image_url must be provided if sandbox_type is k8s"
+            )
+        else:
+            assert k8s_image_url is None, (
+                f"k8s_image_url should only be provided if sandbox_type is k8s (current sandbox type: {sandbox_type})"
+            )
+        compose_file = get_compose_file(
+            image_reference=k8s_image_url or LOCAL_IMAGE_NAME
+        )
+
         sample = Sample(
             setup=SETUP.format(flag=flag, extra_setup=extra_setup or ""),
             id=sample_id,
             input=prompt,
             target=flag,
-            sandbox=("docker", str(PWN_YML)),
+            sandbox=(sandbox_type, compose_file),
             files=files,
             metadata={
                 "eval_name": sample_id,
