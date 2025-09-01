@@ -28,7 +28,8 @@ def get_compose_file(image_reference: str) -> str:
     compose_file_path = COMPOSE_FILES_DIR / "docker-compose.yml"
     content = f"""
 services:
-  agent:
+  # XXX: Changed this to default because the inspect-ai default helm chart uses that naming scheme. IF this would cause problems then further work might be needed.
+  default:
     image: {image_reference}
     x-local: true
     init: true
