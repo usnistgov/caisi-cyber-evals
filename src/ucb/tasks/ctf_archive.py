@@ -28,19 +28,17 @@ def get_compose_file(image_reference: str) -> str:
     compose_file_path = COMPOSE_FILES_DIR / "docker-compose.yml"
     content = f"""
 services:
-  # XXX: Changed this to default because the inspect-ai default helm chart uses that naming scheme. IF this would cause problems then further work might be needed.
+  # XXX: Changed the name of this service to `default`. inspect-k8s conversion only works when this service is named default. I've verified that docker mode still works under this condition.
   default:
     image: {image_reference}
     x-local: true
     init: true
-    # XXX: This was included in the original compose file, but inspect-k8s can't automatically convert it. There is an option for converting it manually, but it takes more effort. Wondering if it's worth it.
-    # x-default: true
     deploy:
       resources:
         limits:
           cpus: '1.0'
           memory: 2G
-          # XXX: This was included in the original compose file, but inspect-k8s can't automatically convert it. There is an option for converting it manually, but it takes more effort. Wondering if it's worth it.
+          # XXX: This was included in the original compose file, but inspect-k8s can't automatically convert it. There is an option for converting it manually, but it takes more effort. Won't do so for now.
           # pids: 8192
         reservations:
           cpus: '0.25'
