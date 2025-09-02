@@ -28,6 +28,7 @@ def get_compose_file(image_reference: str) -> str:
     compose_file_path = COMPOSE_FILES_DIR / "docker-compose.yml"
     content = f"""
 services:
+  # XXX: Changed the name of this service to `default`. inspect-k8s conversion only works when this service is named default. I've verified that docker mode still works under this condition.
   default:
     image: {image_reference}
     x-local: true
