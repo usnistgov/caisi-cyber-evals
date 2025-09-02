@@ -33,14 +33,12 @@ services:
     image: {image_reference}
     x-local: true
     init: true
-    # XXX: This was included in the original compose file, but inspect-k8s can't automatically convert it. There is an option for converting it manually, but it takes more effort. Wondering if it's worth it.
-    # x-default: true
     deploy:
       resources:
         limits:
           cpus: '1.0'
           memory: 2G
-          # XXX: This was included in the original compose file, but inspect-k8s can't automatically convert it. There is an option for converting it manually, but it takes more effort. Wondering if it's worth it.
+          # XXX: This was included in the original compose file, but inspect-k8s can't automatically convert it. There is an option for converting it manually, but it takes more effort. Won't do so for now.
           # pids: 8192
         reservations:
           cpus: '0.25'
