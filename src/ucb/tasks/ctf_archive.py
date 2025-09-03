@@ -35,14 +35,15 @@ services:
     init: true
     deploy:
       resources:
+        # Limits and reservations are equal to ensure a `Guaranteed` QoS class in k8s (https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/).
         limits:
           cpus: '1.0'
           memory: 2G
           # XXX: This was included in the original compose file, but inspect-k8s can't automatically convert it. There is an option for converting it manually, but it takes more effort. Won't do so for now.
           # pids: 8192
         reservations:
-          cpus: '0.25'
-          memory: 512M
+          cpus: '1.0'
+          memory: 2G
 """
 
     with open(compose_file_path, "w") as f:
