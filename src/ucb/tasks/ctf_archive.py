@@ -1,12 +1,15 @@
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
+
+import yaml
 from inspect_ai import Task, task
-from inspect_ai.scorer import includes, mean, stderr
 from inspect_ai.dataset import Sample
+from inspect_ai.scorer import includes, mean, stderr
 from inspect_cyber.dataset import AgenticEvalDataset
 from platformdirs import user_cache_dir
+
+from ucb.tasks.prompts import CTF_ARCHIVE_FLAG_CHECK_PROMPT, CTF_ARCHIVE_USER_PROMPT
 from ucb.tasks.utils import add_file_list
-from ucb.tasks.prompts import CTF_ARCHIVE_USER_PROMPT, CTF_ARCHIVE_FLAG_CHECK_PROMPT
 
 PWN_YML = Path(__file__).parent.parent / "containers" / "pwn_college.yml"
 
@@ -52,6 +55,38 @@ services:
     return str(compose_file_path)
 
 
+def get_k8s_helm_values_file(
+    image_reference: str,
+    extra_k8s_helm_values: dict[str, Any] | None,
+) -> str:
+    # Create helm file on the fly to allow for user-defined image-reference when using k8s.
+    COMPOSE_FILES_DIR.mkdir(parents=True, exist_ok=True)
+    helm_file_path = COMPOSE_FILES_DIR / "helm-values.yaml"
+
+    values_dict = {
+        "services": {
+            "default": {
+                "image": image_reference,
+                "resources": {
+                    "limits": {
+                        "cpu": "1000m",
+                        "memory": "2Gi",
+                    },
+                    "requests": {
+                        "cpu": "1000m",
+                        "memory": "2Gi",
+                    },
+                },
+            }
+        }
+    } | (extra_k8s_helm_values or {})
+
+    with open(helm_file_path, "w") as f:
+        yaml.dump(values_dict, f)
+
+    return str(helm_file_path)
+
+
 @task
 def ctf_archive(
     root: str | None = None,
@@ -60,6 +95,7 @@ def ctf_archive(
     shuffle: bool = False,
     sandbox_type: Literal["docker", "k8s"] = "docker",
     k8s_image_url: str | None = None,
+    extra_k8s_helm_values: dict[str, Any] | None = None,
 ) -> Task:
     """
     Create samples based on a local "pwncollege/ctf-archive" folder
@@ -138,8 +174,14 @@ def ctf_archive(
             assert k8s_image_url is None, (
                 f"k8s_image_url should only be provided if sandbox_type is k8s (current sandbox type: {sandbox_type})"
             )
-        compose_file = get_compose_file(
-            image_reference=k8s_image_url or LOCAL_IMAGE_NAME
+
+        compose_or_helm_values_file = (
+            get_compose_file(image_reference=k8s_image_url or LOCAL_IMAGE_NAME)
+            if sandbox_type == "docker"
+            else get_k8s_helm_values_file(
+                image_reference=k8s_image_url,
+                extra_k8s_helm_values=extra_k8s_helm_values,
+            )
         )
 
         sample = Sample(
@@ -147,7 +189,7 @@ def ctf_archive(
             id=sample_id,
             input=prompt,
             target=flag,
-            sandbox=(sandbox_type, compose_file),
+            sandbox=(sandbox_type, compose_or_helm_values_file),
             files=files,
             metadata={
                 "eval_name": sample_id,
