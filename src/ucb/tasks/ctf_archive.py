@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Callable, Literal
 
 import yaml
 from inspect_ai import Task, task
@@ -57,7 +57,8 @@ services:
 
 def get_k8s_helm_values_file(
     image_reference: str,
-    extra_k8s_helm_values: dict[str, Any] | None,
+    k8s_helm_values_postprocesser: Callable[[dict[str, Any]], dict[str, Any]]
+    | None = None,
 ) -> str:
     # Create helm file on the fly to allow for user-defined image-reference when using k8s.
     COMPOSE_FILES_DIR.mkdir(parents=True, exist_ok=True)
@@ -79,7 +80,10 @@ def get_k8s_helm_values_file(
                 },
             }
         }
-    } | (extra_k8s_helm_values or {})
+    }
+
+    if k8s_helm_values_postprocesser is not None:
+        values_dict = k8s_helm_values_postprocesser(values_dict)
 
     with open(helm_file_path, "w") as f:
         yaml.dump(values_dict, f)
@@ -95,7 +99,8 @@ def ctf_archive(
     shuffle: bool = False,
     sandbox_type: Literal["docker", "k8s"] = "docker",
     k8s_image_url: str | None = None,
-    extra_k8s_helm_values: dict[str, Any] | None = None,
+    k8s_helm_values_postprocesser: Callable[[dict[str, Any]], dict[str, Any]]
+    | None = None,
 ) -> Task:
     """
     Create samples based on a local "pwncollege/ctf-archive" folder
@@ -180,7 +185,7 @@ def ctf_archive(
             if sandbox_type == "docker"
             else get_k8s_helm_values_file(
                 image_reference=k8s_image_url,
-                extra_k8s_helm_values=extra_k8s_helm_values,
+                k8s_helm_values_postprocesser=k8s_helm_values_postprocesser,
             )
         )
 
