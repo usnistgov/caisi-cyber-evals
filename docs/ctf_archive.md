@@ -14,12 +14,12 @@ docker build -t pwn_workspace https://github.com/pwncollege/dojo.git#master:work
 
 # Build agent container, combining cyber tools and inspect helpers
 # Be sure to update the path to point to this folder within your repo
-docker build -t pwn_legacy aisi-cyber-evals/src/ucb/containers/pwn_college/
+docker build -t pwn_legacy caisi-cyber-evals/src/ucb/containers/pwn_college/
 
 # Download challenge files (~4gb)
 git clone https://github.com/pwncollege/ctf-archive.git ~/ctf-archive
 
-inspect eval ... ucb/ctf_archive --solver ucb/ctf_archive_agent -T root=~/ctf-archive
+inspect eval ucb/ctf_archive --solver ucb/ctf_archive_agent -T root=~/ctf-archive --model [model name]
 ```
 
 # Agent Container
