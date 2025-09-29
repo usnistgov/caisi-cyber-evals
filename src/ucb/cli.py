@@ -257,8 +257,8 @@ def build(args):
             push_images(images, image_base)
             logger.info("All containers pushed to %s", image_base)
 
-    # Cleanup temporary files
-    cleanup_temp_files(compose_pattern + ".tmp")
+        # Cleanup temporary files
+        cleanup_temp_files(compose_pattern + ".tmp")
 
 
 def pull(args):
