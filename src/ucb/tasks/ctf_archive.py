@@ -1,3 +1,4 @@
+import uuid
 from pathlib import Path
 from typing import Any, Callable, Literal
 
@@ -28,7 +29,7 @@ RM_REHOST_CMD = "rm /challenge/REHOST.md"
 def get_compose_file(image_reference: str) -> str:
     # Create compose file on the fly to allow for user-defined image-reference when using k8s.
     COMPOSE_FILES_DIR.mkdir(parents=True, exist_ok=True)
-    compose_file_path = COMPOSE_FILES_DIR / "docker-compose.yml"
+    compose_file_path = COMPOSE_FILES_DIR / f"docker-compose-{uuid.uuid4()}.yml"
     content = f"""
 services:
   # XXX: Changed the name of this service to `default`. inspect-k8s conversion only works when this service is named default. I've verified that docker mode still works under this condition.
@@ -62,7 +63,7 @@ def get_k8s_helm_values_file(
 ) -> str:
     # Create helm file on the fly to allow for user-defined image-reference when using k8s.
     COMPOSE_FILES_DIR.mkdir(parents=True, exist_ok=True)
-    helm_file_path = COMPOSE_FILES_DIR / "helm-values.yaml"
+    helm_file_path = COMPOSE_FILES_DIR / f"helm-values-{uuid.uuid4()}.yaml"
 
     values_dict = {
         "services": {
@@ -162,12 +163,10 @@ def ctf_archive(
         flag_check_message = (
             CTF_ARCHIVE_FLAG_CHECK_PROMPT
             if any(["flagCheck " in str(x) for x in files.keys()])
-            else
-            ""
+            else ""
         )
         prompt = CTF_ARCHIVE_USER_PROMPT.format(
-            instruction=task_description,
-            flag_check_message=flag_check_message
+            instruction=task_description, flag_check_message=flag_check_message
         )
 
         assert sandbox_type in {"docker", "k8s"}, (
