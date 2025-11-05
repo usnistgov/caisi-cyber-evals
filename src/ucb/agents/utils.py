@@ -213,8 +213,11 @@ def _is_reasoning_model() -> bool:
         return False
 
     if isinstance(model.api, OpenAIAPI):
-        # All OpenAI o-series models think, no other reasoning models do.
-        return model.api.is_o_series()
+        # All OpenAI o-series models think, same with gpt 5
+        # TODO: Need to update for future model names to detect reasoning,
+        # Perhaps should assume all new models are reasoning?
+        if model.api.is_o_series() or model.api.is_gpt_5():
+            return True
 
     # We cannot do a similar check for Anthropic because 3.7 Sonnet can either
     # use thinking or not depending on the arguments passed to it.
