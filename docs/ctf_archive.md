@@ -4,14 +4,6 @@ The [CTF-Archive](https://github.com/pwncollege/ctf-archive/tree/main) dojo from
 
 ### Quickstart
 ```sh
-
-# Ensure sane permissions
-umask 0022
-
-# Fetch and build dependency containers
-docker build -t pwn_legacy_base https://github.com/pwncollege/challenge-images.git#main:legacy/
-docker build -t pwn_workspace https://github.com/pwncollege/dojo.git#master:workspace/
-
 # Build agent container, combining cyber tools and inspect helpers
 # Be sure to update the path to point to this folder within your repo
 docker build -t pwn_legacy caisi-cyber-evals/src/ucb/containers/pwn_college/
